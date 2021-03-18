@@ -1,49 +1,50 @@
-import React, { useContext } from "react";
-import { NavLink } from "react-router-dom";
-import { RootContext } from "../App.js";
+import React, { useContext } from 'react';
+import { NavLink } from 'react-router-dom';
+import { FeedContext } from '../store/feedStore';
 
 const Header = () => {
-  // const activeStyle = {
-  //   color: "green",
-  //   fontSize: "2rem"
-  // };
-
-  const { globalFeeds, loading } = useContext(RootContext);
-
-  console.log(loading, globalFeeds.articlesCount);
+  const { user } = useContext(FeedContext);
+  // console.log(loading, feeds.articlesCount);
 
   return (
     <div>
-      <nav class="navbar navbar-light">
-        <div class="container">
-          <a class="navbar-brand" href="index.html">
+      <nav className='navbar navbar-light'>
+        <div className='container'>
+          <a className='navbar-brand' href='index.html'>
             conduit
           </a>
-          {/* <div>{loading ? "Loading......." : globalFeeds.articlesCount}</div> */}
-          <ul class="nav navbar-nav pull-xs-right">
-            <li class="nav-item">
-              {/* Add "active" class when you're on that page" */}
-              {/* <a class="nav-link active" href="">
-                Home
-              </a> */}
-              <NavLink exact to="/" class="nav-link active">
+          <ul className='nav navbar-nav pull-xs-right'>
+            <li className='nav-item'>
+              <NavLink exact to='/' className='nav-link' activeClassName='nav-link active'>
                 {/* activeStyle={activeStyle}> */}
                 Home
               </NavLink>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="">
-                <i class="ion-compose"></i>&nbsp;New Post
-              </a>
+
+            {user.isLogin ? (
+              <>
+                <li className='nav-item'>
+                  <a className='nav-link' href=''>
+                    <i className='ion-compose'></i>&nbsp;New Post
+                  </a>
+                </li>
+                <li className='nav-item'>
+                  <a className='nav-link' href=''>
+                    <i className='ion-gear-a'></i>&nbsp;Settings
+                  </a>
+                </li>
+              </>
+            ) : (
+              ''
+            )}
+
+            <li className='nav-item'>
+              <NavLink exact to='/login' className='nav-link'>
+                Sign in
+              </NavLink>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="">
-                <i class="ion-gear-a"></i>&nbsp;Settings
-              </a>
-            </li>
-            <li class="nav-item">
-              <NavLink exact to="/login" class="nav-link">
-                {/* activeStyle={activeStyle}> */}
+            <li className='nav-item'>
+              <NavLink exact to='/register' className='nav-link'>
                 Sign up
               </NavLink>
             </li>

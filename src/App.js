@@ -1,41 +1,33 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import Header from "./components/Header.jsx";
-import Footer from "./components/Footer.jsx";
-import Home from "./views/Home.jsx";
-import Login from "./views/Login.jsx";
-import useFetch from "./useFetch";
-// import store from "./store";
-// import { Provider } from "react-redux";
+import React from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import FeedStore from './store/feedStore';
 
-export const RootContext = React.createContext();
+import Header from './components/Header.jsx';
+import Footer from './components/Footer.jsx';
+
+import Home from './views/Home.jsx';
+import Login from './views/Login.jsx';
+import Register from './views/Register';
 
 function App() {
-  const [globalFeeds, setGlobalFeeds] = useState([]);
-
-  const loading = useFetch(setGlobalFeeds, "https://conduit.productionready.io/api/articles?limit=10&offset=0");
-
-  useEffect(() => {
-    console.log("App : ", globalFeeds.articlesCount);
-  }, [globalFeeds]);
-
   return (
-    <RootContext.Provider value={{ globalFeeds, loading }}>
-      <div className="App">
+    <FeedStore>
+      <div>
         <Router>
-          <header className="App-header">
+          <header>
             <Header />
           </header>
 
-          <Route exact path="/" component={props => <Home />} />
-          <Route path="/login" component={props => <Login />} />
+          <Route exact path='/' component={() => <Home />} />
+          <Route path='/login' component={() => <Login />} />
+          <Route path='/register' component={() => <Register />} />
         </Router>
 
         <footer>
           <Footer />
         </footer>
       </div>
-    </RootContext.Provider>
+    </FeedStore>
   );
 }
 
