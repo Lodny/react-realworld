@@ -28,6 +28,19 @@
 
 - GET : https://conduit.productionready.io/api/articles?limit=10&offset=0&tag=SIDA
 
+## 6. Tag list
+
+<ul class="tag-list">
+      <li class="tag-default tag-pill tag-outline ng-binding ng-scope" ng-repeat="tag in $ctrl.article.tagList">
+        test
+      </li>
+      <li class="tag-default tag-pill tag-outline ng-binding ng-scope" ng-repeat="tag in $ctrl.article.tagList">
+        fun
+      </li><!-- end ngRepeat: tag in $ctrl.article.tagList --><li class="tag-default tag-pill tag-outline ng-binding ng-scope" ng-repeat="tag in $ctrl.article.tagList">
+        jatha
+      </li><!-- end ngRepeat: tag in $ctrl.article.tagList -->
+    </ul>
+
 ```
   JSON :
   {

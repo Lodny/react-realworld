@@ -1,23 +1,20 @@
 import * as actions from '../actions/feedAction';
 
-export const feedReducer = (feeds, { type, payload }) => {
+export const feedReducer = (feed, { type, payload }) => {
   console.log('feedReducer() : ', type);
 
   switch (type) {
-    case actions.SET_FEEDS:
-      return payload;
+    case actions.SET_GLOBAL_ARTICLES:
+      return { ...feed, showArticles: type, global: payload };
 
-    // case 'ADD_TODO':
-    //   return [...todos, { title: payload, id: todos.length, status: 'todo' }];
+    case actions.SET_TAG_ARTICLES:
+      return { ...feed, showArticles: type, tag: payload };
 
-    // case 'CHANGE_TODO_STATUS':
-    //   return todos.map((todo) => {
-    //     if (todo.id === +payload) {
-    //       if (todo.status === 'done') todo.status = 'todo';
-    //       else todo.status = 'done';
-    //     }
-    //     return todo;
-    //   });
+    case actions.SET_YOUR_ARTICLES:
+      return { ...feed, showArticles: type, your: payload };
+
+    case actions.REMOVE_ALL_ARTICLES:
+      return { ...feed, showArticles: '', global: null, tag: null, your: null };
 
     default:
       break;

@@ -19,19 +19,19 @@ function Login() {
     const response = await fetch('https://conduit.productionready.io/api/users/login', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json;charset=utf-8',
+        'Content-Type': 'application/json;charset=utf-8'
       },
       body: JSON.stringify({
         user: {
           email: email.current.value,
-          password: pass.current.value,
-        },
-      }),
+          password: pass.current.value
+        }
+      })
     });
 
     const result = await response.json();
 
-    if (response.status == 200) {
+    if (response.status === 200) {
       console.log('gooooooood');
       // userDispatch()
     } else {

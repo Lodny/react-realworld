@@ -1,31 +1,52 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FeedContext } from '../store/feedStore';
 import * as actions from '../actions/feedAction';
-import useFetch from '../hooks/useFetch';
+import { fetchCB } from '../util';
 
 import ArticlePreview from '../components/ArticlePreview';
 import Tags from '../components/Tags';
 
 function Home() {
-  const { feeds, user, feedDispatch } = useContext(FeedContext);
-  // const [loading, setLoading] = useState(false);
+  const { feed, user, feedDispatch } = useContext(FeedContext);
+  const [refresh, setRefresh] = useState(false);
 
-  const setGlobalFeeds = (data) => {
-    console.log(data.articlesCount);
-    feedDispatch({ type: actions.SET_FEEDS, payload: data });
-    // setLoading(true);
+  const getGlobalArticles = (data) => {
+    console.log('Home() : setGlobalArticles() : ', data);
+    feedDispatch({ type: actions.SET_GLOBAL_ARTICLES, payload: data });
   };
 
-  const loading = useFetch(setGlobalFeeds, 'https://conduit.productionready.io/api/articles?limit=10&offset=0');
-
   useEffect(() => {
-    console.log('Home() : useEffect() : user.isLogin : ', user.isLogin);
+    console.log('Home() : useEffect() : feed : ', feed);
+    const url = 'https://conduit.productionready.io/api/articles?limit=10&offset=0';
+    fetchCB(getGlobalArticles, url);
 
     return () => {
-      console.log('Home() : useEffect() : go to other page : ');
-      feedDispatch({ type: actions.SET_FEEDS, payload: {} });
+      console.log('Home() : useEffect() : delete articles and go to other page : ');
+      feedDispatch({ type: actions.REMOVE_ALL_ARTICLES, payload: {} });
+      // feedDispatch({ type: actions.SET_GLOBAL_ARTICLES, payload: {} });
     };
-  }, []);
+  }, [refresh]);
+
+  let articles = null;
+  let tag = null;
+  switch (feed.showArticles) {
+    case actions.SET_GLOBAL_ARTICLES:
+      articles = feed.global.articles;
+      break;
+
+    case actions.SET_TAG_ARTICLES:
+      articles = feed.tag.articles;
+      tag = feed.tag.tag;
+      console.log('Home() : feed.tag : ', feed.tag);
+      break;
+
+    case actions.SET_YOUR_ARTICLES:
+      articles = feed.your.articles;
+      break;
+
+    default:
+      break;
+  }
 
   return (
     <div>
@@ -54,16 +75,33 @@ function Home() {
                     ''
                   )}
                   <li className='nav-item'>
-                    <a className='nav-link active' href=''>
+                    <a
+                      className={'nav-link ' + (!tag ? 'active' : '')}
+                      href='/#/'
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setRefresh(!refresh);
+                      }}
+                    >
                       Global Feed
                     </a>
                   </li>
+
+                  {tag ? (
+                    <li className='nav-item'>
+                      <a className='nav-link active disabled' href='/#/' onClick={(e) => e.preventDefault()}>
+                        #{tag}
+                      </a>
+                    </li>
+                  ) : (
+                    ''
+                  )}
                 </ul>
               </div>
 
-              {feeds.articles ? (
+              {articles ? (
                 <>
-                  {feeds.articles?.map((article) => (
+                  {articles?.map((article) => (
                     <ArticlePreview article={article} key={article.createdAt} />
                   ))}
                 </>
@@ -72,8 +110,6 @@ function Home() {
                   <div className='author'>Loding Articles...</div>
                 </div>
               )}
-
-              {feeds.articlesCount}
             </div>
 
             <Tags />
