@@ -19,14 +19,14 @@ function Login() {
     const response = await fetch('https://conduit.productionready.io/api/users/login', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json;charset=utf-8'
+        'Content-Type': 'application/json;charset=utf-8',
       },
       body: JSON.stringify({
         user: {
           email: email.current.value,
-          password: pass.current.value
-        }
-      })
+          password: pass.current.value,
+        },
+      }),
     });
 
     const result = await response.json();
@@ -50,7 +50,7 @@ function Login() {
             <div className='col-md-6 offset-md-3 col-xs-12'>
               <h1 className='text-xs-center'>Sign in</h1>
               <p className='text-xs-center'>
-                <a href=''>Need an account?</a>
+                <a href='/#/register'>Need an account?</a>
               </p>
 
               {error ? (

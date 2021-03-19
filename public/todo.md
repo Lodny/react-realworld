@@ -41,6 +41,12 @@
       </li><!-- end ngRepeat: tag in $ctrl.article.tagList -->
     </ul>
 
+## 7. Click username
+
+- GET : profile : https://conduit.productionready.io/api/profiles/drinkjuice
+- GET : articles : https://conduit.productionready.io/api/articles?author=drinkjuice&limit=5&offset=0
+  - Favorite articles : https://conduit.productionready.io/api/articles?favorited=drinkjuice&limit=5&offset=0
+
 ```
   JSON :
   {

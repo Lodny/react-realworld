@@ -10,12 +10,12 @@ const Header = () => {
     <div>
       <nav className='navbar navbar-light'>
         <div className='container'>
-          <a className='navbar-brand' href='index.html'>
+          <a className='navbar-brand' href='/#/'>
             conduit
           </a>
           <ul className='nav navbar-nav pull-xs-right'>
             <li className='nav-item'>
-              <NavLink exact to='/' className='nav-link' activeClassName='nav-link active'>
+              <NavLink exact to='/#/' className='nav-link' activeClassName='nav-link active'>
                 {/* activeStyle={activeStyle}> */}
                 Home
               </NavLink>
