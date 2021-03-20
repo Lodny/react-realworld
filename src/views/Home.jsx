@@ -1,52 +1,58 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { FeedContext } from '../store/feedStore';
 import * as actions from '../actions/feedAction';
-import { fetchCB } from '../util';
+import axios from 'axios';
 
 import ArticlePreview from '../components/ArticlePreview';
 import Tags from '../components/Tags';
+import Pagination from '../components/Pagination';
 
-function Home() {
-  const { feed, user, feedDispatch } = useContext(FeedContext);
-  const [refresh, setRefresh] = useState(false);
-
-  const getGlobalArticles = (data) => {
-    console.log('Home() : setGlobalArticles() : ', data);
-    feedDispatch({ type: actions.SET_GLOBAL_ARTICLES, payload: data });
-  };
+function Home({ history }) {
+  const { feed, feedDispatch, user, userDispatch } = useContext(FeedContext);
 
   useEffect(() => {
-    console.log('Home() : useEffect() : feed : ', feed);
-    const url = 'https://conduit.productionready.io/api/articles?limit=10&offset=0';
-    fetchCB(getGlobalArticles, url);
+    userDispatch({ type: actions.SET_HISTORY, payload: history });
+    // if (user?.isLogin) userDispatch({ type: actions.CHANGE_ARTICLES, payload: 0 });
+    console.log('Home() : useEffect() : init');
 
     return () => {
-      console.log('Home() : useEffect() : delete articles and go to other page : ');
-      feedDispatch({ type: actions.REMOVE_ALL_ARTICLES, payload: {} });
-      // feedDispatch({ type: actions.SET_GLOBAL_ARTICLES, payload: {} });
+      console.log('Home() : useEffect() : delete articles and tag');
+      feedDispatch({ type: actions.REMOVE_ARTICLES, payload: user.isLogin ? 0 : 1 });
     };
-  }, [refresh]);
+  }, []);
 
-  let articles = null;
-  let tag = null;
-  switch (feed.showArticles) {
-    case actions.SET_GLOBAL_ARTICLES:
-      articles = feed.global.articles;
-      break;
+  useEffect(() => {
+    console.log('Home() : useEffect() : feed.selected : ', feed.selected);
 
-    case actions.SET_TAG_ARTICLES:
-      articles = feed.tag.articles;
-      tag = feed.tag.tag;
-      console.log('Home() : feed.tag : ', feed.tag);
-      break;
+    const processSuccess = (data) => {
+      console.log('Home() : useEffect() : processSuccess() : ', data);
+      feedDispatch({ type: actions.SET_ARTICLES, payload: data });
+    };
 
-    case actions.SET_YOUR_ARTICLES:
-      articles = feed.your.articles;
-      break;
+    const processError = (err) => {
+      console.log('Profile() : useEffect() : processError() : ', err);
+      if (err?.status) {
+        console.log('status', err.status, err.data.errors);
+      } else {
+        console.log('err', err);
+      }
+    };
 
-    default:
-      break;
-  }
+    let url;
+    if (feed.selected === 0)
+      url = `https://conduit.productionready.io/api/articles/feed?limit=10&offset=${feed.currPage * 10}`;
+    else
+      url = `https://conduit.productionready.io/api/articles?limit=10&offset=${feed.currPage * 10}${
+        feed.tag ? '&tag=' + feed.tag : ''
+      }`;
+    console.log('Home() : useEffect() : url : ', url);
+    axios
+      .get(url)
+      .then((res) => processSuccess(res.data))
+      .catch((err) => processError(err?.response || err?.request || err.message));
+  }, [feed.selected, feed.tag, feed.currPage]);
+
+  const articles = feed.articles?.articles;
 
   return (
     <div>
@@ -66,7 +72,15 @@ function Home() {
                   {user.isLogin ? (
                     <>
                       <li className='nav-item'>
-                        <a className='nav-link disabled' href=''>
+                        <a
+                          href='/'
+                          className={'nav-link ' + (feed.selected === 0 ? 'disabled active' : '')}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (feed.selected === 0) return;
+                            feedDispatch({ type: actions.CHANGE_ARTICLES, payload: 0 });
+                          }}
+                        >
                           Your Feed
                         </a>
                       </li>
@@ -76,21 +90,22 @@ function Home() {
                   )}
                   <li className='nav-item'>
                     <a
-                      className={'nav-link ' + (!tag ? 'active' : '')}
-                      href='/#/'
+                      href='/'
+                      className={'nav-link ' + (feed.selected === 1 ? 'disabled active' : '')}
                       onClick={(e) => {
                         e.preventDefault();
-                        setRefresh(!refresh);
+                        if (feed.selected === 1) return;
+                        feedDispatch({ type: actions.CHANGE_ARTICLES, payload: 1 });
                       }}
                     >
                       Global Feed
                     </a>
                   </li>
 
-                  {tag ? (
+                  {feed.tag ? (
                     <li className='nav-item'>
-                      <a className='nav-link active disabled' href='/#/' onClick={(e) => e.preventDefault()}>
-                        #{tag}
+                      <a href='/' className='nav-link active disabled' onClick={(e) => e.preventDefault()}>
+                        #{feed.tag}
                       </a>
                     </li>
                   ) : (
@@ -104,6 +119,7 @@ function Home() {
                   {articles?.map((article) => (
                     <ArticlePreview article={article} key={article.createdAt} />
                   ))}
+                  <Pagination />
                 </>
               ) : (
                 <div className='article-preview'>

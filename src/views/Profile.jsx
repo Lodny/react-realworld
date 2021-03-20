@@ -1,27 +1,17 @@
 import { useState, useEffect, useContext } from 'react';
 import ArticlePreview from '../components/ArticlePreview';
-import { fetchCB } from '../util';
+import axios from 'axios';
 import { FeedContext } from '../store/feedStore';
 
 const Profile = ({ match, history }) => {
-  console.log('Profile() : match : ', match);
-  console.log('Profile() : username : ', match.params.username);
+  // console.log('Profile() : match : ', match);
+  // console.log('Profile() : username : ', match.params.username);
 
   const { user } = useContext(FeedContext);
 
   const [profile, setProfile] = useState(null);
   const [articles, setArticles] = useState(null);
   const [selected, setSelected] = useState('my');
-
-  const getProfile = (data) => {
-    console.log('Profile() : getProfile() : ', data.profile);
-    setProfile(data.profile);
-  };
-
-  const getArticles = (data) => {
-    console.log('Profile() : getArticles() : ', data.articles);
-    setArticles(data.articles);
-  };
 
   const changeArticles = (select, e) => {
     e.preventDefault();
@@ -38,18 +28,53 @@ const Profile = ({ match, history }) => {
   };
 
   useEffect(() => {
-    console.log('Profile() : useEffect() : profile : ', profile);
-    console.log('Profile() : useEffect() : articles : ', articles);
+    // console.log('Profile() : useEffect() : profile : ', profile);
+    // console.log('Profile() : useEffect() : articles : ', articles);
+
+    const processSuccess = (data) => {
+      console.log('Profile() : useEffect() : processSuccess() : ', data.profile);
+      setProfile(data.profile);
+    };
+
+    const processError = (err) => {
+      console.log('Profile() : useEffect() : processError() : ', err);
+      if (err?.status) {
+        console.log('status', err.status, err.data.errors);
+      } else {
+        console.log('err', err);
+      }
+    };
+
     let url = 'https://conduit.productionready.io/api/profiles/' + match.params.username;
-    fetchCB(getProfile, url);
+    axios
+      .get(url)
+      .then((res) => processSuccess(res.data))
+      .catch((err) => processError(err?.response || err?.request || err.message));
   }, []);
 
   useEffect(() => {
+    const processSuccess = (data) => {
+      console.log('Profile() : useEffect2() : processSuccess() : ', data.articles);
+      setArticles(data.articles);
+    };
+
+    const processError = (err) => {
+      console.log('Profile() : useEffect2() : processError() : ', err);
+      if (err?.status) {
+        console.log('status', err.status, err.data.errors);
+      } else {
+        console.log('err', err);
+      }
+    };
+
     let url;
     if (selected === 'my')
       url = `https://conduit.productionready.io/api/articles?author=${match.params.username}&limit=5&offset=0`;
     else url = `https://conduit.productionready.io/api/articles?favorited=${match.params.username}&limit=5&offset=0`;
-    fetchCB(getArticles, url);
+    axios
+      .get(url)
+      .then((res) => processSuccess(res.data))
+      .catch((err) => processError(err?.response || err?.request || err.message));
   }, [selected]);
 
   if (null === profile) {
@@ -63,7 +88,7 @@ const Profile = ({ match, history }) => {
         <div className='container'>
           <div className='row'>
             <div className='col-xs-12 col-md-10 offset-md-1'>
-              <img src={profile.image} className='user-img' />
+              <img src={profile.image} className='user-img' alt={profile.bio} />
               <h4>{profile.username}</h4>
               <p>
                 {/* Cofounder @GoThinkster, lived in Aol's HQ for a few months, kinda looks like Peeta from the Hunger Games */}

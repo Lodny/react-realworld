@@ -1,23 +1,17 @@
 import * as actions from '../actions/userAction';
 
 export const userReducer = (user, { type, payload }) => {
-  console.log('userReducer() : ', type);
+  console.log('userReducer() : ', type, payload);
 
   switch (type) {
     case actions.LOGIN:
-      return { ...user, isLogin: true };
+      return { ...user, isLogin: true, user: payload };
 
-    // case 'ADD_TODO':
-    //   return [...todos, { title: payload, id: todos.length, status: 'todo' }];
+    case actions.LOGOUT:
+      return { ...user, isLogin: false, user: null };
 
-    // case 'CHANGE_TODO_STATUS':
-    //   return todos.map((todo) => {
-    //     if (todo.id === +payload) {
-    //       if (todo.status === 'done') todo.status = 'todo';
-    //       else todo.status = 'done';
-    //     }
-    //     return todo;
-    //   });
+    case actions.SET_HISTORY:
+      return { ...user, history: payload };
 
     default:
       break;

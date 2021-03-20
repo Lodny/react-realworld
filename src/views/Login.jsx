@@ -1,45 +1,51 @@
-import React, { useRef, useState } from 'react';
-// import useFetch from '../hooks/useFetch';
-// import { FeedContext } from '../store/feedStore';
-// import * as actions from '../actions/userAction';
+import React, { useRef, useState, useContext } from 'react';
+import { NavLink } from 'react-router-dom';
+import axios from 'axios';
 
-function Login() {
-  // const { user, userDispatch } = useContext(FeedContext);
+import { FeedContext } from '../store/feedStore';
+import * as actions from '../actions/feedAction';
+
+function Login({ history }) {
   const email = useRef();
   const pass = useRef();
 
-  // const [errorMessage, setErrorMessage] = useState('');
+  const { userDispatch } = useContext(FeedContext);
   const [error, setError] = useState(false);
 
-  const login = async (e) => {
+  const login = (e) => {
     e.preventDefault();
 
     console.log('Login() : login() : try : ', email.current.value, pass.current.value);
-    // useFetch(resultLogin, 'https://conduit.productionready.io/api/users/login', {
-    const response = await fetch('https://conduit.productionready.io/api/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify({
-        user: {
-          email: email.current.value,
-          password: pass.current.value,
-        },
-      }),
-    });
 
-    const result = await response.json();
+    const processSuccess = (data) => {
+      console.log('Login() : login() : processSuccess() : ', data);
+      // userDispatch({ type: actions.CHANGE_ARTICLES, payload: 0 });
+      userDispatch({ type: actions.LOGIN, payload: data.user });
+      history.push('/');
+    };
 
-    if (response.status === 200) {
-      console.log('gooooooood');
-      // userDispatch()
-    } else {
-      setError(true);
-    }
+    const processError = (err) => {
+      console.log('Login() : login() : processError() : ', err);
+      if (err?.status) {
+        console.log('status', err.status, err.data.errors);
+        setError(err.data.errors);
+      } else {
+        console.log('err', err);
+      }
+    };
 
-    console.log(response);
-    console.log(result);
+    const url = 'https://conduit.productionready.io/api/users/login';
+    console.log('Login() : login() : url : ', url);
+    const option = {
+      user: {
+        email: email.current.value,
+        password: pass.current.value
+      }
+    };
+    axios
+      .post(url, option)
+      .then((res) => processSuccess(res.data))
+      .catch((err) => processError(err?.response || err?.request || err.message));
   };
 
   return (
@@ -50,7 +56,7 @@ function Login() {
             <div className='col-md-6 offset-md-3 col-xs-12'>
               <h1 className='text-xs-center'>Sign in</h1>
               <p className='text-xs-center'>
-                <a href='/#/register'>Need an account?</a>
+                <NavLink to='/register'>Need an account?</NavLink>
               </p>
 
               {error ? (

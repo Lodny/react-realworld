@@ -1,20 +1,14 @@
 import React, { useEffect, useReducer } from 'react';
-// import useFetch from '../hooks/useFetch';
 import { feedReducer } from '../reducers/feedReducer';
 import { userReducer } from '../reducers/userReducer';
-// import * as actions from '../actions/feedAction';
 
 export const FeedContext = React.createContext();
 
 const FeedStore = (props) => {
-  const [user, userDispatch] = useReducer(userReducer, { isLogin: false });
-  const [feed, feedDispatch] = useReducer(feedReducer, { showArticles: '' });
+  // console.log(props);
 
-  // const setGlobalFeeds = (data) => {
-  //   feedDispatch({ type: actions.SET_FEEDS, payload: data });
-  // };
-
-  // const loading = useFetch(setGlobalFeeds, 'https://conduit.productionready.io/api/articles?limit=10&offset=0');
+  const [user, userDispatch] = useReducer(userReducer, { isLogin: false, history: null });
+  const [feed, feedDispatch] = useReducer(feedReducer, { selected: 1, tag: null, currPage: 0 });
 
   useEffect(() => {
     console.log('FeedStore() : upadated feed');

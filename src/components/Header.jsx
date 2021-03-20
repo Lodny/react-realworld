@@ -4,19 +4,18 @@ import { FeedContext } from '../store/feedStore';
 
 const Header = () => {
   const { user } = useContext(FeedContext);
-  // console.log(loading, feeds.articlesCount);
+  console.log('Header() : user : ', user);
 
   return (
     <div>
       <nav className='navbar navbar-light'>
         <div className='container'>
-          <a className='navbar-brand' href='/#/'>
+          <NavLink to='/' className='navbar-brand'>
             conduit
-          </a>
+          </NavLink>
           <ul className='nav navbar-nav pull-xs-right'>
             <li className='nav-item'>
-              <NavLink exact to='/#/' className='nav-link' activeClassName='nav-link active'>
-                {/* activeStyle={activeStyle}> */}
+              <NavLink to='/' className='nav-link'>
                 Home
               </NavLink>
             </li>
@@ -24,30 +23,41 @@ const Header = () => {
             {user.isLogin ? (
               <>
                 <li className='nav-item'>
-                  <a className='nav-link' href=''>
+                  <NavLink to='/editor' className='nav-link'>
                     <i className='ion-compose'></i>&nbsp;New Post
-                  </a>
+                  </NavLink>
                 </li>
                 <li className='nav-item'>
-                  <a className='nav-link' href=''>
+                  <NavLink to='/settings' className='nav-link'>
                     <i className='ion-gear-a'></i>&nbsp;Settings
-                  </a>
+                  </NavLink>
+                </li>
+                <li className='nav-item'>
+                  <NavLink to={`/@${user.user.username}`} className='nav-link'>
+                    {user.user.username}
+                  </NavLink>
                 </li>
               </>
             ) : (
               ''
             )}
 
-            <li className='nav-item'>
-              <NavLink exact to='/login' className='nav-link'>
-                Sign in
-              </NavLink>
-            </li>
-            <li className='nav-item'>
-              <NavLink exact to='/register' className='nav-link'>
-                Sign up
-              </NavLink>
-            </li>
+            {!user.isLogin ? (
+              <>
+                <li className='nav-item'>
+                  <NavLink to='/login' className='nav-link'>
+                    Sign in
+                  </NavLink>
+                </li>
+                <li className='nav-item'>
+                  <NavLink to='/register' className='nav-link'>
+                    Sign up
+                  </NavLink>
+                </li>
+              </>
+            ) : (
+              ''
+            )}
           </ul>
         </div>
       </nav>

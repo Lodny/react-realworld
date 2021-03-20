@@ -1,3 +1,7 @@
+# 개 사진 랜덤
+
+: http://dog.ceo/api/breeds/image/random
+
 # Todo list
 
 ## 1. Get Global Feed
@@ -21,8 +25,8 @@
   - {"user":{"id":150305,"email":"drinkjuice@naver.com","createdAt":"2021-03-17T06:01:41.772Z","updatedAt":"2021-03-17T06:03:07.454Z","username":"drinkjuice","bio":"hi...","image":null,"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTUwMzA1LCJ1c2VybmFtZSI6ImRyaW5ranVpY2UiLCJleHAiOjE2MjEyMzk2OTR9.KQ7Le1RwlA2dv1JA8AiY7HD9eaNBfwRa5zKsRZY8PYo"}}
 
   - Get Tags : https://conduit.productionready.io/api/tags
-  - Get Feeds https://conduit.productionready.io/api/articles/feed?limit=10&offset=0
-    - global : https://conduit.productionready.io/api/articles?limit=10&offset=0
+  - Your Feed : https://conduit.productionready.io/api/articles/feed?limit=10&offset=0-
+  - global Feed : https://conduit.productionready.io/api/articles?limit=10&offset=0
 
 ## 5. Click Tag
 
@@ -30,22 +34,19 @@
 
 ## 6. Tag list
 
-<ul class="tag-list">
-      <li class="tag-default tag-pill tag-outline ng-binding ng-scope" ng-repeat="tag in $ctrl.article.tagList">
-        test
-      </li>
-      <li class="tag-default tag-pill tag-outline ng-binding ng-scope" ng-repeat="tag in $ctrl.article.tagList">
-        fun
-      </li><!-- end ngRepeat: tag in $ctrl.article.tagList --><li class="tag-default tag-pill tag-outline ng-binding ng-scope" ng-repeat="tag in $ctrl.article.tagList">
-        jatha
-      </li><!-- end ngRepeat: tag in $ctrl.article.tagList -->
-    </ul>
-
 ## 7. Click username
 
 - GET : profile : https://conduit.productionready.io/api/profiles/drinkjuice
 - GET : articles : https://conduit.productionready.io/api/articles?author=drinkjuice&limit=5&offset=0
   - Favorite articles : https://conduit.productionready.io/api/articles?favorited=drinkjuice&limit=5&offset=0
+
+## 8. Article
+
+- GET : https://conduit.productionready.io/api/articles/${slug}
+
+## 9. Click Pages
+
+- GET : https://conduit.productionready.io/api/articles?limit=10&offset=${page \* 10}
 
 ```
   JSON :

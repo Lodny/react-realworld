@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { FeedContext } from '../store/feedStore';
 
 const ArticlePreview = ({ article }) => {
   // console.log(article);
-  // const dateString = new Date(article.createdAt).toLocaleDateString();
+  const { user } = useContext(FeedContext);
+
+  const handleFollow = () => {
+    console.log('Profile() : handleFollow() : user : ', user.isLogin);
+    if (!user.isLogin) user.history?.push('/register');
+  };
+
   const dateString = new Date(article.createdAt).toDateString();
+
   return (
     <div className='article-preview'>
       {article ? (
@@ -18,7 +26,7 @@ const ArticlePreview = ({ article }) => {
               </a>
               <span className='date'>{dateString}</span>
             </div>
-            <button className='btn btn-outline-primary btn-sm pull-xs-right'>
+            <button onClick={handleFollow} className='btn btn-outline-primary btn-sm pull-xs-right'>
               <i className='ion-heart'></i> {article.favoritesCount}
             </button>
           </div>
@@ -43,21 +51,3 @@ const ArticlePreview = ({ article }) => {
 };
 
 export default ArticlePreview;
-
-{
-  /* 
-<a ui-sref="app.article({ slug: $ctrl.article.slug })" class="preview-link" href="#/article/jatalal-test-article-olj6ms">
-    <h1 ng-bind="$ctrl.article.title" class="ng-binding">Jatalal Test Article</h1>
-    <p ng-bind="$ctrl.article.description" class="ng-binding">This article is for testing api from jathalal</p>
-    <span>Read more...</span>
-    <ul class="tag-list">
-      <!-- ngRepeat: tag in $ctrl.article.tagList --><li class="tag-default tag-pill tag-outline ng-binding ng-scope" ng-repeat="tag in $ctrl.article.tagList">
-        test
-      </li><!-- end ngRepeat: tag in $ctrl.article.tagList --><li class="tag-default tag-pill tag-outline ng-binding ng-scope" ng-repeat="tag in $ctrl.article.tagList">
-        fun
-      </li><!-- end ngRepeat: tag in $ctrl.article.tagList --><li class="tag-default tag-pill tag-outline ng-binding ng-scope" ng-repeat="tag in $ctrl.article.tagList">
-        jatha
-      </li><!-- end ngRepeat: tag in $ctrl.article.tagList -->
-    </ul>
-  </a> */
-}

@@ -1,5 +1,11 @@
-export const SET_GLOBAL_ARTICLES = 'SET_GLOBAL_ARTICLES';
-export const SET_TAG_ARTICLES = 'SET_TAG_ARTICLES';
-export const SET_YOUR_ARTICLES = 'SET_YOUR_ARTICLES';
+// feed
+export const SET_ARTICLES = 'SET_ARTICLES';
+export const CHANGE_ARTICLES = 'CHANGE_ARTICLES';
+export const SET_CURR_PAGE = 'SET_CURR_PAGE';
+export const SET_ARTICLES_TAG = 'SET_ARTICLES_TAG';
+export const REMOVE_ARTICLES = 'REMOVE_ARTICLES';
 
-export const REMOVE_ALL_ARTICLES = 'REMOVE_ALL_ARTICLES';
+// user
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
+export const SET_HISTORY = 'SET_HISTORY';

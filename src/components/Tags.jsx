@@ -1,46 +1,38 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FeedContext } from '../store/feedStore';
 import * as actions from '../actions/feedAction';
-import { fetchCB } from '../util';
+import axios from 'axios';
 
 const Tags = () => {
   const { feedDispatch } = useContext(FeedContext);
   const [tags, setTags] = useState([]);
 
-  const getTagArticles = (data) => {
-    console.log('Tags() : setTagArticles() : ', data);
-    feedDispatch({ type: actions.SET_TAG_ARTICLES, payload: data });
-  };
-
   const selectTag = (tag, e) => {
     e.preventDefault();
     console.log('Tags() : selectTag() : ', tag);
-    const url = `https://conduit.productionready.io/api/articles?limit=10&offset=0&tag=${tag}`;
-    fetchCB(getTagArticles, url, { tag: tag });
-  };
-
-  // ---
-  const getTags = (data) => {
-    setTags(data.tags);
+    feedDispatch({ type: actions.SET_ARTICLES_TAG, payload: tag });
   };
 
   useEffect(() => {
+    const processSuccess = (data) => {
+      console.log('Tags() : useEffect() : processSuccess() : ', data);
+      setTags(data.tags);
+    };
+
+    const processError = (err) => {
+      console.log('Tags() : useEffect() : processError() : ', err);
+      if (err?.status) {
+        console.log('status', err.status, err.data.errors);
+      } else {
+        console.log('err', err);
+      }
+    };
+
     console.log('Tags() : useEffect() : tags : ', tags);
-    const url = 'https://conduit.productionready.io/api/tags';
-    fetchCB(getTags, url);
-    // fetch(url)
-    //   .then(res => {
-    //     console.log('Tags() : useEffect() : fetch() : res : ', res);
-    //     return res.json();
-    //   })
-    //   .then(data => {
-    //     console.log('Tags() : useEffect() : fetch() : data : ', data);
-    //     setTags(data.tags);
-    //   });
-    // .catch(res => {
-    //   console.log("Tags() : useEffect() : fetch() : res : ", res);
-    //   return res.json();
-    // });
+    axios
+      .get('https://conduit.productionready.io/api/tags')
+      .then((res) => processSuccess(res.data))
+      .catch((err) => processError(err?.response || err?.request || err.message));
   }, []);
 
   return (
