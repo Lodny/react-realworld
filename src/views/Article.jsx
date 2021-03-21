@@ -6,11 +6,11 @@ const Article = ({ match, history }) => {
   // console.log(match, history);
   const [article, setArticle] = useState(null);
 
-  const { user } = useContext(FeedContext);
+  const { store } = useContext(FeedContext);
 
   const handleFollow = () => {
-    console.log('Article() : handleFollow() : user : ', user.isLogin);
-    if (!user.isLogin) user.history?.push('/register');
+    console.log('Article() : handleFollow() : store : ', store.isLogin);
+    if (!store.isLogin) store.history?.push('/register');
   };
 
   useEffect(() => {

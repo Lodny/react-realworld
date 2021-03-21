@@ -48,6 +48,12 @@
 
 - GET : https://conduit.productionready.io/api/articles?limit=10&offset=${page \* 10}
 
+## 10. Favorite
+
+- POST : https://conduit.productionready.io/api/articles/this-is-a-title-x0qci9/favorite
+- token,
+  {"article":{"title":"This is a title","slug":"this-is-a-title-x0qci9","body":"This is a body of the article","createdAt":"2021-03-20T12:36:15.547Z","updatedAt":"2021-03-20T12:36:15.547Z","tagList":[],"description":"This is a description","author":{"username":"Harwick","bio":null,"image":"https://static.productionready.io/images/smiley-cyrus.jpg","following":false},"favorited":true,"favoritesCount":1}}
+
 ```
   JSON :
   {

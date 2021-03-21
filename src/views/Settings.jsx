@@ -3,12 +3,11 @@ import { FeedContext } from '../store/feedStore';
 import * as actions from '../actions/feedAction';
 
 const Settings = ({ history }) => {
-  const { userDispatch } = React.useContext(FeedContext);
+  const { dispatch } = React.useContext(FeedContext);
 
   const logout = () => {
     console.log('Settings() : logout()');
-    userDispatch({ type: actions.LOGOUT, payload: null });
-    // userDispatch({ type: actions.CHANGE_ARTICLES, payload: 1 });
+    dispatch({ type: actions.LOGOUT, payload: null });
     history.push('/');
   };
 
@@ -44,7 +43,7 @@ const Settings = ({ history }) => {
               </fieldset>
             </form>
             <hr />
-            <button class='btn btn-outline-danger' onClick={logout}>
+            <button className='btn btn-outline-danger' onClick={logout}>
               Or click here to logout.
             </button>
           </div>

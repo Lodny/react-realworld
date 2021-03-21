@@ -4,6 +4,7 @@ export const feedReducer = (feed, { type, payload }) => {
   console.log('feedReducer() : ', type);
 
   switch (type) {
+    // article
     case actions.SET_ARTICLES:
       return { ...feed, articles: payload };
 
@@ -18,6 +19,8 @@ export const feedReducer = (feed, { type, payload }) => {
 
     case actions.REMOVE_ARTICLES:
       return { ...feed, viewArticle: '', articles: null, tag: null, currPage: 0, selected: payload };
+
+    // user
 
     default:
       break;

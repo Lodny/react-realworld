@@ -1,13 +1,16 @@
-import React, { useRef, useState } from 'react';
+import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
+import { FeedContext } from '../store/feedStore';
+import * as actions from '../actions/feedAction';
 
-function Register() {
-  const username = useRef();
-  const email = useRef();
-  const pass = useRef();
+function Register({ history }) {
+  const username = React.useRef();
+  const email = React.useRef();
+  const pass = React.useRef();
 
-  const [errors, setErrors] = useState(null);
+  const { dispatch } = React.useContext(FeedContext);
+  const [errors, setErrors] = React.useState(null);
 
   const register = (e) => {
     e.preventDefault();
@@ -15,7 +18,8 @@ function Register() {
 
     const processSuccess = (data) => {
       console.log('Register() : register() : processSuccess() : ', data);
-      // feedDispatch({ type: actions.SET_ARTICLES, payload: data });
+      dispatch({ type: actions.LOGIN, payload: data.user });
+      history.push('/');
     };
 
     const processError = (err) => {
@@ -28,13 +32,14 @@ function Register() {
       }
     };
 
-    const url = 'https://conduit.productionready.io/api/users';
+    // const url = 'https://conduit.productionready.io/api/users';
+    const url = 'http://localhost:5000/api/users';
     console.log('Register() : register() : url : ', url);
     const option = {
       user: {
+        username: username.current.value,
         email: email.current.value,
-        password: pass.current.value,
-        username: username.current.value
+        password: pass.current.value
       }
     };
     axios
@@ -55,6 +60,11 @@ function Register() {
   // Request URL: https://conduit.productionready.io/api/tags
   // Request URL: https://conduit.productionready.io/api/articles/feed?limit=10&offset=0
 
+  const errMsg = [];
+  if (errors) {
+    Object.keys(errors).forEach((key) => errors[key].forEach((msg) => errMsg.push(key + ' ' + msg)));
+  }
+
   return (
     <div>
       <div className='auth-page'>
@@ -67,7 +77,8 @@ function Register() {
               </p>
 
               <ul className='error-messages'>
-                {errors ? Object.entries(errors).map((err) => <li key={err[0]}>{err[0] + ' ' + err[1]}</li>) : ''}
+                {/* {errors ? Object.entries(errors).map((err) => <li key={err[0]}>{err[0] + ' ' + err[1]}</li>) : ''} */}
+                {errors ? errMsg.map((msg) => <li key={msg}>{msg}</li>) : ''}
               </ul>
 
               <form onSubmit={register}>

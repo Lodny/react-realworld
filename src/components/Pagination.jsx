@@ -3,14 +3,14 @@ import { FeedContext } from '../store/feedStore';
 import * as actions from '../actions/feedAction';
 
 const Pagination = () => {
-  const { feed, feedDispatch } = useContext(FeedContext);
+  const { store, dispatch } = useContext(FeedContext);
 
   const handlePage = (page) => {
     console.log('Pagination() : handlePage() : page : ', page);
-    feedDispatch({ type: actions.SET_CURR_PAGE, payload: page });
+    dispatch({ type: actions.SET_CURR_PAGE, payload: page });
   };
 
-  const pageCount = Math.floor(feed.articles?.articlesCount / 10);
+  const pageCount = Math.floor(store?.articlesCount / 10);
   if (pageCount === 0) return '';
 
   return (
@@ -18,7 +18,7 @@ const Pagination = () => {
       <ul className='pagination'>
         {[...Array(pageCount).keys()].map((page) => (
           <li
-            className={'page-item ng-scope ' + (feed.currPage === page ? 'active' : '')}
+            className={'page-item ng-scope ' + (store.currPage === page ? 'active' : '')}
             onClick={() => handlePage(page)}
             key={page}
           >

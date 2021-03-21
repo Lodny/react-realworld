@@ -4,13 +4,13 @@ import * as actions from '../actions/feedAction';
 import axios from 'axios';
 
 const Tags = () => {
-  const { feedDispatch } = useContext(FeedContext);
+  const { dispatch } = useContext(FeedContext);
   const [tags, setTags] = useState([]);
 
   const selectTag = (tag, e) => {
     e.preventDefault();
     console.log('Tags() : selectTag() : ', tag);
-    feedDispatch({ type: actions.SET_ARTICLES_TAG, payload: tag });
+    dispatch({ type: actions.SET_ARTICLES_TAG, payload: tag });
   };
 
   useEffect(() => {

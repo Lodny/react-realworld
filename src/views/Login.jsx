@@ -9,7 +9,7 @@ function Login({ history }) {
   const email = useRef();
   const pass = useRef();
 
-  const { userDispatch } = useContext(FeedContext);
+  const { dispatch } = useContext(FeedContext);
   const [error, setError] = useState(false);
 
   const login = (e) => {
@@ -19,8 +19,7 @@ function Login({ history }) {
 
     const processSuccess = (data) => {
       console.log('Login() : login() : processSuccess() : ', data);
-      // userDispatch({ type: actions.CHANGE_ARTICLES, payload: 0 });
-      userDispatch({ type: actions.LOGIN, payload: data.user });
+      dispatch({ type: actions.LOGIN, payload: data.user });
       history.push('/');
     };
 
@@ -34,7 +33,8 @@ function Login({ history }) {
       }
     };
 
-    const url = 'https://conduit.productionready.io/api/users/login';
+    // const url = 'https://conduit.productionready.io/api/users/login';
+    const url = 'http://localhost:5000/api/users/login';
     console.log('Login() : login() : url : ', url);
     const option = {
       user: {

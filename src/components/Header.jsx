@@ -3,8 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { FeedContext } from '../store/feedStore';
 
 const Header = () => {
-  const { user } = useContext(FeedContext);
-  console.log('Header() : user : ', user);
+  const { store } = useContext(FeedContext);
+  console.log('Header() : store : ', store);
 
   return (
     <div>
@@ -20,7 +20,7 @@ const Header = () => {
               </NavLink>
             </li>
 
-            {user.isLogin ? (
+            {store.isLogin ? (
               <>
                 <li className='nav-item'>
                   <NavLink to='/editor' className='nav-link'>
@@ -33,8 +33,8 @@ const Header = () => {
                   </NavLink>
                 </li>
                 <li className='nav-item'>
-                  <NavLink to={`/@${user.user.username}`} className='nav-link'>
-                    {user.user.username}
+                  <NavLink to={`/@${store.user.username}`} className='nav-link'>
+                    {store.user.username}
                   </NavLink>
                 </li>
               </>
@@ -42,7 +42,7 @@ const Header = () => {
               ''
             )}
 
-            {!user.isLogin ? (
+            {!store.isLogin ? (
               <>
                 <li className='nav-item'>
                   <NavLink to='/login' className='nav-link'>
