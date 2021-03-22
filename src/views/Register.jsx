@@ -35,15 +35,15 @@ function Register({ history }) {
     // const url = 'https://conduit.productionready.io/api/users';
     const url = 'http://localhost:5000/api/users';
     console.log('Register() : register() : url : ', url);
-    const option = {
+    const body = {
       user: {
         username: username.current.value,
         email: email.current.value,
-        password: pass.current.value
-      }
+        password: pass.current.value,
+      },
     };
     axios
-      .post(url, option)
+      .post(url, body)
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   };
@@ -87,6 +87,7 @@ function Register({ history }) {
                 </fieldset>
                 <fieldset className='form-group'>
                   <input ref={email} className='form-control form-control-lg' type='text' placeholder='Email' />
+                  {/* <input ref={email} className='form-control form-control-lg' type='email' placeholder='Email' /> */}
                 </fieldset>
                 <fieldset className='form-group'>
                   <input ref={pass} className='form-control form-control-lg' type='password' placeholder='Password' />

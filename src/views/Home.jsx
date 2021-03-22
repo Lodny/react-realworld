@@ -44,8 +44,9 @@ function Home({ history }) {
       option = {
         headers: {
           'content-type': 'application/json;charset=UTF-8',
-          authorization: `Token ${store.user.token}`
-        }
+          // 'Access-Control-Allow-Headers': 'authorization',
+          authorization: `Token ${store.user.token}`,
+        },
       };
     }
 

@@ -36,14 +36,14 @@ function Login({ history }) {
     // const url = 'https://conduit.productionready.io/api/users/login';
     const url = 'http://localhost:5000/api/users/login';
     console.log('Login() : login() : url : ', url);
-    const option = {
+    const body = {
       user: {
         email: email.current.value,
-        password: pass.current.value
-      }
+        password: pass.current.value,
+      },
     };
     axios
-      .post(url, option)
+      .post(url, body)
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   };
