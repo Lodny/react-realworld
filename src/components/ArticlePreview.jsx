@@ -31,9 +31,9 @@ const ArticlePreview = ({ article }) => {
       const option = {
         headers: {
           authorization: `Token ${store.user.token}`,
-          'Access-Control-Allow-Headers': 'authorization'
+          'Access-Control-Allow-Headers': 'authorization',
           // 'Access-Control-Allow-Origin' : ?????
-        }
+        },
       };
       axios
         .post(url, null, option)

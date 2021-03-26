@@ -1,12 +1,16 @@
 import { useEffect, useState, useContext } from 'react';
 import { FeedContext } from '../store/feedStore';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
+import Comment from '../components/Comment';
+import { NavLink } from 'react-router-dom';
 
 const Article = ({ match, history }) => {
   // console.log(match, history);
+  const { store } = useContext(FeedContext);
   const [article, setArticle] = useState(null);
 
-  const { store } = useContext(FeedContext);
+  const deleteArticle = () => {};
 
   const handleFollow = () => {
     console.log('Article() : handleFollow() : store : ', store.isLogin);
@@ -28,7 +32,8 @@ const Article = ({ match, history }) => {
       }
     };
 
-    const url = `https://conduit.productionready.io/api/articles/${match.params.slug}`;
+    // const url = `https://conduit.productionready.io/api/articles/${match.params.slug}`;
+    const url = `http://localhost:5000/api/articles/${match.params.slug}`;
     axios
       .get(url)
       .then((res) => processSuccess(res.data))
@@ -36,8 +41,9 @@ const Article = ({ match, history }) => {
   }, []);
 
   if (!article) return '';
-
   const dateString = new Date(article.createdAt).toDateString();
+
+  console.log('>>>> username : ', article.author);
 
   return (
     <div className='article-page'>
@@ -55,15 +61,29 @@ const Article = ({ match, history }) => {
               </a>
               <span className='date'>{dateString}</span>
             </div>
-            <button className='btn btn-sm btn-outline-secondary' onClick={handleFollow}>
-              <i className='ion-plus-round'></i>
-              &nbsp; Follow {article.author.username} <span className='counter'>(10)</span>
-            </button>
-            &nbsp;&nbsp;
-            <button className='btn btn-sm btn-outline-primary' onClick={handleFollow}>
-              <i className='ion-heart'></i>
-              &nbsp; Favorite Post <span className='counter'>({article.favoritesCount})</span>
-            </button>
+
+            {store.user.username === article.author.username ? (
+              <span className='ng-scope'>
+                <NavLink to={`/editor/${article.slug}`} className='btn btn-outline-secondary btn-sm'>
+                  <i className='ion-edit'></i> Edit Article
+                </NavLink>{' '}
+                <button className='btn btn-outline-danger btn-sm' onClick={deleteArticle}>
+                  <i className='ion-trash-a'> Delete Article </i>
+                </button>
+              </span>
+            ) : (
+              <span className='ng-scope ng-hide'>
+                <button className='btn btn-sm btn-outline-secondary' onClick={handleFollow}>
+                  <i className='ion-plus-round'> &nbsp; Follow {article.author.username} </i>{' '}
+                  <span className='counter'>(10)</span>
+                </button>
+                &nbsp;&nbsp;
+                <button className='btn btn-sm btn-outline-primary' onClick={handleFollow}>
+                  <i className='ion-heart'>&nbsp; Favorite Post</i>{' '}
+                  <span className='counter'>({article.favoritesCount})</span>
+                </button>
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -71,11 +91,16 @@ const Article = ({ match, history }) => {
       <div className='container page'>
         <div className='row article-content'>
           <div className='col-md-12'>
-            <p>{article.body}</p>
-            <h2 id='introducing-ionic'>Introducing RealWorld.</h2>
-            <p>It's a great solution for learning how other frameworks work.</p>
+            <ReactMarkdown>{article.body}</ReactMarkdown>
           </div>
         </div>
+        <ul className='tag-list'>
+          {article.tagList.map((tag) => (
+            <li className='tag-default tag-pill tag-outline ng-binding ng-scope' key={tag}>
+              {tag}
+            </li>
+          ))}
+        </ul>
         <hr />
         <div className='article-actions'>
           <div className='article-meta'>
@@ -88,69 +113,40 @@ const Article = ({ match, history }) => {
               </a>
               <span className='date'>{dateString}</span>
             </div>
-            <button className='btn btn-sm btn-outline-secondary' onClick={handleFollow}>
-              <i className='ion-plus-round'></i>
-              &nbsp; Follow {article.author.username} <span className='counter'>(10)</span>
-            </button>
-            &nbsp;
-            <button className='btn btn-sm btn-outline-primary' onClick={handleFollow}>
-              <i className='ion-heart'></i>
-              &nbsp; Favorite Post <span className='counter'>({article.favoritesCount})</span>
-            </button>
+            {store.user.username === article.author.username ? (
+              <span className='ng-scope'>
+                <NavLink to={`/editor/${article.slug}`} className='btn btn-outline-secondary btn-sm'>
+                  <i className='ion-edit'></i> Edit Article
+                </NavLink>{' '}
+                <button className='btn btn-outline-danger btn-sm' onClick={deleteArticle}>
+                  <i className='ion-trash-a'> Delete Article </i>
+                </button>
+              </span>
+            ) : (
+              <span className='ng-scope ng-hide'>
+                <button className='btn btn-sm btn-outline-secondary' onClick={handleFollow}>
+                  <i className='ion-plus-round'> &nbsp; Follow {article.author.username} </i>{' '}
+                  <span className='counter'>(10)</span>
+                </button>
+                &nbsp;&nbsp;
+                <button className='btn btn-sm btn-outline-primary' onClick={handleFollow}>
+                  <i className='ion-heart'>&nbsp; Favorite Post</i>{' '}
+                  <span className='counter'>({article.favoritesCount})</span>
+                </button>
+              </span>
+            )}
           </div>
         </div>
-        <div className='text-xs-center'>
-          <a href='/#/login'>Sign in</a> or <a href='/#/register'>Sign up</a> to add comments on this article.
-        </div>
-        {/* <div className='row'>
-          <div className='col-xs-12 col-md-8 offset-md-2'>
-            <form className='card comment-form'>
-              <div className='card-block'>
-                <textarea className='form-control' placeholder='Write a comment...' rows='3'></textarea>
-              </div>
-              <div className='card-footer'>
-                <img src='http://i.imgur.com/Qr71crq.jpg' className='comment-author-img' />
-                <button className='btn btn-sm btn-primary'>Post Comment</button>
-              </div>
-            </form>
 
-            <div className='card'>
-              <div className='card-block'>
-                <p className='card-text'>With supporting text below as a natural lead-in to additional content.</p>
-              </div>
-              <div className='card-footer'>
-                <a href='' className='comment-author'>
-                  <img src='http://i.imgur.com/Qr71crq.jpg' className='comment-author-img' />
-                </a>
-                &nbsp;
-                <a href='' className='comment-author'>
-                  Jacob Schmidt
-                </a>
-                <span className='date-posted'>Dec 29th</span>
-              </div>
-            </div>
-
-            <div className='card'>
-              <div className='card-block'>
-                <p className='card-text'>With supporting text below as a natural lead-in to additional content.</p>
-              </div>
-              <div className='card-footer'>
-                <a href='' className='comment-author'>
-                  <img src='http://i.imgur.com/Qr71crq.jpg' className='comment-author-img' />
-                </a>
-                &nbsp;
-                <a href='' className='comment-author'>
-                  Jacob Schmidt
-                </a>
-                <span className='date-posted'>Dec 29th</span>
-                <span className='mod-options'>
-                  <i className='ion-edit'></i>
-                  <i className='ion-trash-a'></i>
-                </span>
-              </div>
-            </div>
+        {!store.isLogin ? (
+          <div className='text-xs-center'>
+            <a href='/#/login'>Sign in</a> or <a href='/#/register'>Sign up</a> to add comments on this article.
           </div>
-        </div> */}
+        ) : (
+          ''
+        )}
+
+        {/* <Comment slug={article.slug} /> */}
       </div>
     </div>
   );

@@ -53,9 +53,10 @@ function Home({ history }) {
     if (store.selected === 0)
       url = `https://conduit.productionready.io/api/articles/feed?limit=10&offset=${store.currPage * 10}`;
     else
-      url = `https://conduit.productionready.io/api/articles?limit=10&offset=${store.currPage * 10}${
+      url = `http://localhost:5000/api/articles?limit=10&offset=${store.currPage * 10}${
         store.tag ? '&tag=' + store.tag : ''
       }`;
+    // url = `https://conduit.productionready.io/api/articles?limit=10&offset=${store.currPage * 10}${
     console.log('Home() : useEffect() : url : ', url);
     axios
       .get(url, option)

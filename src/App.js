@@ -25,6 +25,7 @@ function App() {
             <Route exact path='/' component={Home} />
             <Route exact path='/settings' component={Settings} />
             <Route exact path='/editor' component={Editor} />
+            <Route exact path='/editor/:slug' component={Editor} />
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
             <Route path='/@:username' component={Profile} />

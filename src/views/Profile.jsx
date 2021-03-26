@@ -69,8 +69,10 @@ const Profile = ({ match, history }) => {
 
     let url;
     if (selected === 'my')
-      url = `https://conduit.productionready.io/api/articles?author=${match.params.username}&limit=5&offset=0`;
+      // url = `https://conduit.productionready.io/api/articles?author=${match.params.username}&limit=5&offset=0`;
+      url = `http://localhost:5000/api/articles?author=${match.params.username}&limit=5&offset=0`;
     else url = `https://conduit.productionready.io/api/articles?favorited=${match.params.username}&limit=5&offset=0`;
+
     axios
       .get(url)
       .then((res) => processSuccess(res.data))

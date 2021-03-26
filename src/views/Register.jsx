@@ -60,9 +60,10 @@ function Register({ history }) {
   // Request URL: https://conduit.productionready.io/api/tags
   // Request URL: https://conduit.productionready.io/api/articles/feed?limit=10&offset=0
 
-  const errMsg = [];
+  // const errMsg = [];
   if (errors) {
-    Object.keys(errors).forEach((key) => errors[key].forEach((msg) => errMsg.push(key + ' ' + msg)));
+    //Object.keys(errors).forEach((key) => errors[key].forEach((msg) => errMsg.push(key + ' ' + msg)));
+    console.log(Object.entries(errors).map(({ key, msg }) => key + ' ' + msg));
   }
 
   return (
@@ -78,7 +79,7 @@ function Register({ history }) {
 
               <ul className='error-messages'>
                 {/* {errors ? Object.entries(errors).map((err) => <li key={err[0]}>{err[0] + ' ' + err[1]}</li>) : ''} */}
-                {errors ? errMsg.map((msg) => <li key={msg}>{msg}</li>) : ''}
+                {/* {errors ? errMsg.map((msg) => <li key={msg}>{msg}</li>) : ''} */}
               </ul>
 
               <form onSubmit={register}>

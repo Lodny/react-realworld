@@ -5,7 +5,8 @@ import axios from 'axios';
 import { FeedContext } from '../store/feedStore';
 import * as actions from '../actions/feedAction';
 
-function Login({ history }) {
+function Login({ history, location }) {
+  console.log('Login() : location : ', location);
   const email = useRef();
   const pass = useRef();
 
