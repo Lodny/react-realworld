@@ -6,7 +6,7 @@ export const rootReducer = (store, { type, payload }) => {
   switch (type) {
     // article
     case actions.SET_ARTICLES:
-      return { ...store, ...payload };
+      return { ...store, articles: payload };
 
     case actions.CHANGE_ARTICLES:
       return { ...store, articles: null, tag: null, currPage: 0, selected: payload };

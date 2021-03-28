@@ -28,21 +28,19 @@ const Settings = ({ history }) => {
     const processError = (err) => {
       console.log('Settings() : update() : processError() : ', err);
       if (err?.status) {
-        console.log('status', err.status, err.data.errors);
-      } else {
-        console.log('err', err);
+        console.log('status', err.status, err.data);
       }
     };
 
-    const url = 'http://localhost:5000/api/user';
+    const url = `${store.serverBase()}/api/user`;
     console.log('Settings() : update() : url : ', url);
-    const option = {
-      headers: {
-        'content-type': 'application/json;charset=UTF-8',
-        'Access-Control-Allow-Headers': 'authorization',
-        authorization: `Token ${store.user.token}`,
-      },
-    };
+    // const option = {
+    //   headers: {
+    //     'content-type': 'application/json;charset=UTF-8',
+    //     'Access-Control-Allow-Headers': 'authorization',
+    //     authorization: `Token ${store.user.token}`,
+    //   },
+    // };
     const body = {
       user: {
         // image: image.current.value,
@@ -50,11 +48,11 @@ const Settings = ({ history }) => {
         // bio: bio.current.value,
         // email: email.current.value,
         // password: password.current.value,
-        ...user,
-      },
+        ...user
+      }
     };
     axios
-      .put(url, body, option)
+      .put(url, body, store.tokenHeader(store.user))
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   };

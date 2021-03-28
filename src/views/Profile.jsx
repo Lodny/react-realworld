@@ -7,7 +7,7 @@ const Profile = ({ match, history }) => {
   // console.log('Profile() : match : ', match);
   // console.log('Profile() : username : ', match.params.username);
 
-  const { user } = useContext(FeedContext);
+  const { store } = useContext(FeedContext);
 
   const [profile, setProfile] = useState(null);
   const [articles, setArticles] = useState(null);
@@ -23,8 +23,27 @@ const Profile = ({ match, history }) => {
   };
 
   const handleFollow = () => {
-    console.log('Profile() : handleFollow() : user : ', user.isLogin);
-    if (!user.isLogin) history.push('/register');
+    console.log('Profile() : handleFollow() : store : ', store.isLogin);
+    if (!store.isLogin) return store.history?.push('/register');
+
+    const processSuccess = (data) => {
+      console.log('Profile() : handleFollow() : processSuccess() : ', data.profile);
+      setProfile(data.profile);
+    };
+
+    const processError = (err) => {
+      console.log('Profile() : handleFollow() : processError() : ', err);
+      if (err?.status) {
+        console.log('status', err.status, err.data);
+      }
+    };
+
+    //Request URL: https://conduit.productionready.io/api/profiles/serenada/follow
+    const url = `${store.serverBase()}/api/profiles/${profile.username}/follow`;
+    axios
+      .post(url, null, store.tokenHeader(store.user))
+      .then((res) => processSuccess(res.data))
+      .catch((err) => processError(err?.response || err?.request || err.message));
   };
 
   useEffect(() => {
@@ -39,15 +58,14 @@ const Profile = ({ match, history }) => {
     const processError = (err) => {
       console.log('Profile() : useEffect() : processError() : ', err);
       if (err?.status) {
-        console.log('status', err.status, err.data.errors);
-      } else {
-        console.log('err', err);
+        console.log('status', err.status, err.data);
       }
     };
 
-    let url = 'https://conduit.productionready.io/api/profiles/' + match.params.username;
+    // let url = 'https://conduit.productionready.io/api/profiles/' + match.params.username;
+    let url = `${store.serverBase()}/api/profiles/` + match.params.username;
     axios
-      .get(url)
+      .get(url, store.tokenHeader(store.user))
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   }, []);
@@ -61,16 +79,14 @@ const Profile = ({ match, history }) => {
     const processError = (err) => {
       console.log('Profile() : useEffect2() : processError() : ', err);
       if (err?.status) {
-        console.log('status', err.status, err.data.errors);
-      } else {
-        console.log('err', err);
+        console.log('status', err.status, err.data);
       }
     };
 
     let url;
     if (selected === 'my')
       // url = `https://conduit.productionready.io/api/articles?author=${match.params.username}&limit=5&offset=0`;
-      url = `http://localhost:5000/api/articles?author=${match.params.username}&limit=5&offset=0`;
+      url = `${store.serverBase()}/api/articles?author=${match.params.username}&limit=5&offset=0`;
     else url = `https://conduit.productionready.io/api/articles?favorited=${match.params.username}&limit=5&offset=0`;
 
     axios
@@ -96,9 +112,13 @@ const Profile = ({ match, history }) => {
                 {/* Cofounder @GoThinkster, lived in Aol's HQ for a few months, kinda looks like Peeta from the Hunger Games */}
                 {profile.bio}
               </p>
-              <button className='btn btn-sm btn-outline-secondary action-btn' onClick={handleFollow}>
-                <i className='ion-plus-round'></i>
-                &nbsp; Follow {profile.username}
+              <button
+                className={'btn btn-sm action-btn ' + (profile.following ? 'btn-secondary' : 'btn-outline-secondary')}
+                onClick={handleFollow}
+              >
+                <i className='ion-plus-round'>
+                  {' ' + (profile.following ? 'Unf' : 'F') + 'ollow ' + profile.username}
+                </i>
               </button>
             </div>
           </div>

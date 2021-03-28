@@ -22,9 +22,7 @@ const Tags = () => {
     const processError = (err) => {
       console.log('Tags() : useEffect() : processError() : ', err);
       if (err?.status) {
-        console.log('status', err.status, err.data.errors);
-      } else {
-        console.log('err', err);
+        console.log('status', err.status, err.data);
       }
     };
 

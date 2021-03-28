@@ -21,22 +21,14 @@ const ArticlePreview = ({ article }) => {
       const processError = (err) => {
         console.log('ArticlePreview() : handleFollow() : processError() : ', err);
         if (err?.status) {
-          console.log('status', err.status, err.data.errors);
-        } else {
-          console.log('err', err);
+          console.log('status', err.status, err.data);
         }
       };
 
       const url = `https://conduit.productionready.io/api/articles/${article.slug}/favorite`;
-      const option = {
-        headers: {
-          authorization: `Token ${store.user.token}`,
-          'Access-Control-Allow-Headers': 'authorization',
-          // 'Access-Control-Allow-Origin' : ?????
-        },
-      };
+
       axios
-        .post(url, null, option)
+        .post(url, null, store.tokenHeader(store.user))
         .then((res) => processSuccess(res.data))
         .catch((err) => processError(err?.response || err?.request || err.message));
     }

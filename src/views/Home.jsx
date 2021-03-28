@@ -26,40 +26,27 @@ function Home({ history }) {
 
     const processSuccess = (data) => {
       console.log('Home() : useEffect() : processSuccess() : ', data);
-      dispatch({ type: actions.SET_ARTICLES, payload: data });
+      dispatch({ type: actions.SET_ARTICLES, payload: data.articles });
     };
 
     const processError = (err) => {
       console.log('Profile() : useEffect() : processError() : ', err);
       if (err?.status) {
-        console.log('status', err.status, err.data.errors);
-      } else {
-        console.log('err', err);
+        console.log('status', err.status, err.data);
       }
     };
 
-    let url;
-    let option = null;
-    if (store.user) {
-      option = {
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-          // 'Access-Control-Allow-Headers': 'authorization',
-          authorization: `Token ${store.user.token}`,
-        },
-      };
-    }
-
-    if (store.selected === 0)
-      url = `https://conduit.productionready.io/api/articles/feed?limit=10&offset=${store.currPage * 10}`;
-    else
-      url = `http://localhost:5000/api/articles?limit=10&offset=${store.currPage * 10}${
-        store.tag ? '&tag=' + store.tag : ''
-      }`;
     // url = `https://conduit.productionready.io/api/articles?limit=10&offset=${store.currPage * 10}${
+    const url =
+      store.selected === 0
+        ? `https://conduit.productionready.io/api/articles/feed?limit=10&offset=${store.currPage * 10}`
+        : `${store.serverBase()}/api/articles?limit=10&offset=${store.currPage * 10}${
+            store.tag ? '&tag=' + store.tag : ''
+          }`;
     console.log('Home() : useEffect() : url : ', url);
+
     axios
-      .get(url, option)
+      .get(url, store.tokenHeader(store.user))
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   }, [store.selected, store.tag, store.currPage]);

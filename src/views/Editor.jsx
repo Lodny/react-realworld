@@ -19,14 +19,12 @@ const Editor = ({ match, history }) => {
       const processError = (err) => {
         console.log('Editor() : useEffect() : processError() : ', err);
         if (err?.status) {
-          console.log('status', err.status, err.data.errors);
-        } else {
-          console.log('err', err);
+          console.log('status', err.status, err.data);
         }
       };
 
       // const url = `https://conduit.productionready.io/api/articles/${match.params.slug}`;
-      const url = `http://localhost:5000/api/articles/${match.params.slug}`;
+      const url = `${store.serverBase()}/api/articles/${match.params.slug}`;
       axios
         .get(url)
         .then((res) => processSuccess(res.data))
@@ -79,26 +77,6 @@ const Editor = ({ match, history }) => {
     setArticle(Object.assign({}, article, { tagList: article.tagList.filter((tag) => tag !== delTag) }));
   };
 
-  // const get article = {
-  //   article: {
-  //     title: 'Javascript',
-  //     slug: 'javascript-6qc8c0',
-  //     body: '# javascript\n- es6',
-  //     createdAt: '2021-03-25T01:30:46.951Z',
-  //     updatedAt: '2021-03-25T01:30:46.951Z',
-  //     tagList: ['javascript', 'es6'],
-  //     description: 'very opened',
-  //     author: {
-  //       username: 'drinkjuice',
-  //       bio: 'hi...\nEnjoy react and vue...1',
-  //       image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
-  //       following: false,
-  //     },
-  //     favorited: false,
-  //     favoritesCount: 0,
-  //   },
-  // };
-
   const addArticle = () => {
     console.log('Editor() : addArticle() : ', article);
 
@@ -110,35 +88,26 @@ const Editor = ({ match, history }) => {
     const processError = (err) => {
       console.log('Editor() : addArticle() : processError() : ', err);
       if (err?.status) {
-        console.log('status', err.status, err.data.errors);
-      } else {
-        console.log('err', err);
+        console.log('status', err.status, err.data);
       }
     };
 
-    const url = 'http://localhost:5000/api/articles';
+    const url = `${store.serverBase()}/api/articles`;
     console.log('Editor() : addArticle() : url : ', url);
-    const option = {
-      headers: {
-        'content-type': 'application/json;charset=UTF-8',
-        'Access-Control-Allow-Headers': 'authorization',
-        authorization: `Token ${store.user.token}`,
-      },
-    };
     const body = {
       article: {
-        ...article,
-      },
+        ...article
+      }
     };
 
     if (match?.params.slug) {
       axios
-        .put(`${url}/${match.params.slug}`, body, option)
+        .put(`${url}/${match.params.slug}`, body, store.tokenHeader(store.user))
         .then((res) => processSuccess(res.data))
         .catch((err) => processError(err?.response || err?.request || err.message));
     } else {
       axios
-        .post(url, body, option)
+        .post(url, body, store.tokenHeader(store.user))
         .then((res) => processSuccess(res.data))
         .catch((err) => processError(err?.response || err?.request || err.message));
     }

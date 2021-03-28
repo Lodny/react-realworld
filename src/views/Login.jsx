@@ -10,8 +10,8 @@ function Login({ history, location }) {
   const email = useRef();
   const pass = useRef();
 
-  const { dispatch } = useContext(FeedContext);
-  const [error, setError] = useState(false);
+  const { store, dispatch } = useContext(FeedContext);
+  const [error, setError] = useState(null);
 
   const login = (e) => {
     e.preventDefault();
@@ -27,27 +27,32 @@ function Login({ history, location }) {
     const processError = (err) => {
       console.log('Login() : login() : processError() : ', err);
       if (err?.status) {
-        console.log('status', err.status, err.data.errors);
+        console.log('status', err.status, err.data);
         setError(err.data.errors);
-      } else {
-        console.log('err', err);
       }
     };
 
     // const url = 'https://conduit.productionready.io/api/users/login';
-    const url = 'http://localhost:5000/api/users/login';
+    const url = `${store.serverBase()}/api/users/login`;
     console.log('Login() : login() : url : ', url);
     const body = {
       user: {
         email: email.current.value,
-        password: pass.current.value,
-      },
+        password: pass.current.value
+      }
     };
+
     axios
-      .post(url, body)
+      .post(url, body, store.tokenHeader(store.user))
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   };
+
+  const errMsg = [];
+  if (error) {
+    console.log('>>> : ', error);
+    Object.keys(error).forEach((key) => error[key].forEach((msg) => errMsg.push(key + ': ' + msg)));
+  }
 
   return (
     <div>
@@ -60,13 +65,7 @@ function Login({ history, location }) {
                 <NavLink to='/register'>Need an account?</NavLink>
               </p>
 
-              {error ? (
-                <ul className='error-messages'>
-                  <li>email or password is invalid</li>
-                </ul>
-              ) : (
-                ''
-              )}
+              <ul className='error-messages'>{error ? errMsg.map((msg) => <li key={msg}>{msg}</li>) : ''}</ul>
 
               <form onSubmit={login}>
                 <fieldset className='form-group'>

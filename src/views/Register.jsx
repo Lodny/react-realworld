@@ -9,8 +9,8 @@ function Register({ history }) {
   const email = React.useRef();
   const pass = React.useRef();
 
-  const { dispatch } = React.useContext(FeedContext);
-  const [errors, setErrors] = React.useState(null);
+  const { store, dispatch } = React.useContext(FeedContext);
+  const [error, setError] = React.useState(null);
 
   const register = (e) => {
     e.preventDefault();
@@ -25,22 +25,24 @@ function Register({ history }) {
     const processError = (err) => {
       console.log('Register() : register() : processError() : ', err);
       if (err?.status) {
-        console.log('status', err.status, err.data.errors);
-        setErrors(err.data.errors);
-      } else {
-        console.log('err', err);
+        console.log('status & errors', err.status, err.data);
+        setError(err.data.errors);
       }
     };
 
+    // home : feed : Request URL: https://conduit.productionready.io/api/articles/feed?limit=10&offset=0
+    // global feed : Request URL: https://conduit.productionready.io/api/articles?limit=10&offset=0
+    // Request URL: https://conduit.productionready.io/api/tags
+    // Request URL: https://conduit.productionready.io/api/articles/feed?limit=10&offset=0
     // const url = 'https://conduit.productionready.io/api/users';
-    const url = 'http://localhost:5000/api/users';
+    const url = `${store.serverBase()}/api/users`;
     console.log('Register() : register() : url : ', url);
     const body = {
       user: {
         username: username.current.value,
         email: email.current.value,
-        password: pass.current.value,
-      },
+        password: pass.current.value
+      }
     };
     axios
       .post(url, body)
@@ -48,22 +50,10 @@ function Register({ history }) {
       .catch((err) => processError(err?.response || err?.request || err.message));
   };
 
-  // home : feed : Request URL: https://conduit.productionready.io/api/articles/feed?limit=10&offset=0
-  // global feed : Request URL: https://conduit.productionready.io/api/articles?limit=10&offset=0
-
-  // registered
-  // {"user":{"id":151274,"email":"drinkjuice3@naver.com","createdAt":"2021-03-20T08:29:12.641Z","updatedAt":"2021-03-20T08:29:12.649Z","username":"drinkjuice3","bio":null,"image":null,"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTUxMjc0LCJ1c2VybmFtZSI6ImRyaW5ranVpY2UzIiwiZXhwIjoxNjIxNDEyOTUyfQ.lRnX3vjfAawlwdat6dlrLVe5CEOUsBPONuyNs8-cNMc"}}
-
-  // request.header.authorization : token
-  // request.authority: conduit.productionready.io
-
-  // Request URL: https://conduit.productionready.io/api/tags
-  // Request URL: https://conduit.productionready.io/api/articles/feed?limit=10&offset=0
-
-  // const errMsg = [];
-  if (errors) {
-    //Object.keys(errors).forEach((key) => errors[key].forEach((msg) => errMsg.push(key + ' ' + msg)));
-    console.log(Object.entries(errors).map(({ key, msg }) => key + ' ' + msg));
+  const errMsg = [];
+  if (error) {
+    console.log('>>> : ', error);
+    Object.keys(error).forEach((key) => error[key].forEach((msg) => errMsg.push(key + ': ' + msg)));
   }
 
   return (
@@ -77,10 +67,7 @@ function Register({ history }) {
                 <NavLink to='/login'>Have an account?</NavLink>
               </p>
 
-              <ul className='error-messages'>
-                {/* {errors ? Object.entries(errors).map((err) => <li key={err[0]}>{err[0] + ' ' + err[1]}</li>) : ''} */}
-                {/* {errors ? errMsg.map((msg) => <li key={msg}>{msg}</li>) : ''} */}
-              </ul>
+              <ul className='error-messages'>{error ? errMsg.map((msg) => <li key={msg}>{msg}</li>) : ''}</ul>
 
               <form onSubmit={register}>
                 <fieldset className='form-group'>

@@ -10,7 +10,7 @@ const Pagination = () => {
     dispatch({ type: actions.SET_CURR_PAGE, payload: page });
   };
 
-  const pageCount = Math.floor(store?.articlesCount / 10);
+  const pageCount = Math.floor(store?.articles.length / 10);
   if (pageCount === 0) return '';
 
   return (
