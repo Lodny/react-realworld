@@ -15,7 +15,7 @@ const Header = () => {
           </NavLink>
           <ul className='nav navbar-nav pull-xs-right'>
             <li className='nav-item'>
-              <NavLink to='/' className='nav-link'>
+              <NavLink exact to='/' className='nav-link'>
                 Home
               </NavLink>
             </li>

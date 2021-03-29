@@ -10,7 +10,18 @@ const Article = ({ match, history }) => {
   const { store, dispatch } = useContext(FeedContext);
   const [article, setArticle] = useState(null);
 
-  const deleteArticle = () => {};
+  const deleteArticle = () => {
+    const url = `${store.serverBase()}/api/articles/${article.slug}`;
+    axios
+      .delete(url, store.tokenHeader(store.user))
+      .then((res) => {
+        console.log('Article() : deleteArticle() : success ');
+        return history.push('/');
+      })
+      .catch((err) => {
+        console.log('Article() : deleteArticle() : err ', err);
+      });
+  };
 
   // ===============================================================================
   const handleFollow = () => {
@@ -21,7 +32,6 @@ const Article = ({ match, history }) => {
       console.log('Article() : handleFollow() : processSuccess() : ', data.profile);
       setArticle({ ...article, author: { ...article.author, following: data.profile.following } });
     };
-    // {"profile":{"username":"serenada","bio":null,"image":"https://static.productionready.io/images/smiley-cyrus.jpg","following":true}}
 
     const processError = (err) => {
       console.log('Article() : handleFollow() : processError() : ', err);
@@ -99,13 +109,13 @@ const Article = ({ match, history }) => {
           <h1>{article.title}</h1>
 
           <div className='article-meta'>
-            <a href={`#/@${article.author.username}`}>
+            <NavLink to={`/@${article.author.username}`}>
               <img src={article.author.image} alt={article.title} />
-            </a>
+            </NavLink>
             <div className='info'>
-              <a href={`#/@${article.author.username}`} className='author'>
+              <NavLink to={`/@${article.author.username}`} className='author'>
                 {article.author.username}
-              </a>
+              </NavLink>
               <span className='date'>{dateString}</span>
             </div>
 
@@ -124,15 +134,15 @@ const Article = ({ match, history }) => {
                   className={'btn btn-sm ' + (article.author.following ? 'btn-secondary' : 'btn-outline-secondary')}
                   onClick={handleFollow}
                 >
-                  <i className='ion-plus-round'>
-                    {' ' + (article.author.following ? 'Unf' : 'F') + 'ollow ' + article.author.username}
+                  <i className={`ion-${article.author.following ? 'minus' : 'plus'}-round`}>
+                    {` ${article.author.following ? 'Unf' : 'F'}ollow ${article.author.username}`}
                   </i>
                 </button>{' '}
                 <button
-                  className={'btn btn-sm ' + (article.favorited ? 'btn-primary' : 'btn-outline-primary')}
+                  className={`btn btn-sm ${article.favorited ? 'btn-primary' : 'btn-outline-primary'}`}
                   onClick={handleFavorite}
                 >
-                  <i className='ion-heart'>{' ' + (article.favorited ? 'Unf' : 'F') + 'avorite Article'}</i>{' '}
+                  <i className='ion-heart'>{` ${article.favorited ? 'Unf' : 'F'}avorite Article`}</i>{' '}
                   <span className='counter'>({article.favoritesCount})</span>
                 </button>
               </span>
@@ -157,13 +167,13 @@ const Article = ({ match, history }) => {
         <hr />
         <div className='article-actions'>
           <div className='article-meta'>
-            <a href={`#/@${article.author.username}`}>
+            <NavLink to={`/@${article.author.username}`}>
               <img src={article.author.image} alt={article.title} />
-            </a>
+            </NavLink>
             <div className='info'>
-              <a href={`#/@${article.author.username}`} className='author'>
+              <NavLink to={`/@${article.author.username}`} className='author'>
                 {article.author.username}
-              </a>
+              </NavLink>
               <span className='date'>{dateString}</span>
             </div>
             {store.user && store.user.username === article.author.username ? (
@@ -181,15 +191,15 @@ const Article = ({ match, history }) => {
                   className={'btn btn-sm ' + (article.author.following ? 'btn-secondary' : 'btn-outline-secondary')}
                   onClick={handleFollow}
                 >
-                  <i className='ion-plus-round'>
-                    {' ' + (article.author.following ? 'Unf' : 'F') + 'ollow ' + article.author.username}
+                  <i className={`ion-${article.author.following ? 'minus' : 'plus'}-round`}>
+                    {` ${article.author.following ? 'Unf' : 'F'}ollow ${article.author.username}`}
                   </i>
                 </button>{' '}
                 <button
-                  className={'btn btn-sm ' + (article.favorited ? 'btn-primary' : 'btn-outline-primary')}
+                  className={`btn btn-sm ${article.favorited ? 'btn-primary' : 'btn-outline-primary'}`}
                   onClick={handleFavorite}
                 >
-                  <i className='ion-heart'>{' ' + (article.favorited ? 'Unf' : 'F') + 'avorite Article'}</i>{' '}
+                  <i className='ion-heart'>{` ${article.favorited ? 'Unf' : 'F'}avorite Article`}</i>{' '}
                   <span className='counter'>({article.favoritesCount})</span>
                 </button>
               </span>
@@ -200,7 +210,8 @@ const Article = ({ match, history }) => {
           <div className='col-xs-12 col-md-8 offset-md-2'>
             {!store.isLogin ? (
               <p>
-                <a href='/#/login'>Sign in</a> or <a href='/#/register'>Sign up</a> to add comments on this article.
+                <NavLink to='/login'>Sign in</NavLink> or <NavLink to='/register'>Sign up</NavLink> to add comments on
+                this article.
               </p>
             ) : (
               ''

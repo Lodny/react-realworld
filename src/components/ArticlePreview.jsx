@@ -2,63 +2,63 @@ import * as React from 'react';
 import { FeedContext } from '../store/feedStore';
 import axios from 'axios';
 import * as actions from '../actions/feedAction.js';
+import { NavLink } from 'react-router-dom';
 
-const ArticlePreview = ({ article }) => {
-  // console.log(article);
+// const ArticlePreview = ({ match, article }) => {
+const ArticlePreview = (props) => {
+  console.log('ArticlePreview() : props : ', props.article);
   const { store, dispatch } = React.useContext(FeedContext);
+  const [article, setArticle] = React.useState(props.article);
 
-  const handleFollow = () => {
-    console.log('ArticlePreview() : handleFollow() : store : ', store.isLogin);
-    if (!store.isLogin) store.history?.push('/register');
-    else {
-      console.log('add favorite...');
+  const handleFavorite = () => {
+    console.log('ArticlePreview() : handleFavorite() : store : ', store.isLogin);
+    if (!store.isLogin) return store.history?.push('/register');
 
-      const processSuccess = (data) => {
-        console.log('ArticlePreview() : handleFollow() : processSuccess() : ', data);
-        dispatch({ type: actions.ADD_FAVORITE, payload: data.article });
-      };
+    console.log('add favorite...');
 
-      const processError = (err) => {
-        console.log('ArticlePreview() : handleFollow() : processError() : ', err);
-        if (err?.status) {
-          console.log('status', err.status, err.data);
-        }
-      };
+    const processSuccess = (data) => {
+      console.log('ArticlePreview() : handleFavorite() : processSuccess() : ', data);
+      // dispatch({ type: actions.ADD_FAVORITE, payload: data.article });
+      setArticle(data.article);
+    };
 
-      const url = `https://conduit.productionready.io/api/articles/${article.slug}/favorite`;
+    const processError = (err) => {
+      console.log('ArticlePreview() : handleFavorite() : processError() : ', err);
+      if (err?.status) {
+        console.log('status', err.status, err.data);
+      }
+    };
 
-      axios
-        .post(url, null, store.tokenHeader(store.user))
-        .then((res) => processSuccess(res.data))
-        .catch((err) => processError(err?.response || err?.request || err.message));
-    }
+    const url = `${store.serverBase()}/api/articles/${article.slug}/favorite`;
+    axios
+      .post(url, null, store.tokenHeader(store.user))
+      .then((res) => processSuccess(res.data))
+      .catch((err) => processError(err?.response || err?.request || err.message));
   };
-
-  const dateString = new Date(article.createdAt).toDateString();
 
   return (
     <div className='article-preview'>
       {article ? (
         <>
           <div className='article-meta'>
-            <a href={`#/@${article.author.username}`}>
+            <NavLink to={`/@${article.author.username}`}>
               <img src={article.author.image} alt={article.title} />
-            </a>
+            </NavLink>
             <div className='info'>
-              <a href={`#/@${article.author.username}`} className='author'>
+              <NavLink to={`/@${article.author.username}`} className='author'>
                 {article.author.username}
-              </a>
-              <span className='date'>{dateString}</span>
+              </NavLink>
+              <span className='date'>{new Date(article.createdAt).toDateString()}</span>
             </div>
             <button
-              onClick={handleFollow}
+              onClick={handleFavorite}
               className={'btn btn-sm pull-xs-right ' + (article.favorited ? 'btn-primary' : 'btn-outline-primary')}
             >
               <i className='ion-heart'></i> {article.favoritesCount}
             </button>
             {/*  ??????????????????  ng-class="{ 'disabled': $ctrl.isSubmitting, */}
           </div>
-          <a href={`#/article/${article.slug}`} className='preview-link'>
+          <NavLink to={`/article/${article.slug}`} className='preview-link'>
             <h1>{article.title}</h1>
             <p>{article.description}</p>
             <span>Read more...</span>
@@ -69,7 +69,7 @@ const ArticlePreview = ({ article }) => {
                 </li>
               ))}
             </ul>
-          </a>
+          </NavLink>
         </>
       ) : (
         'loading...'

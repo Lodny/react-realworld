@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { FeedContext } from '../store/feedStore';
 import * as actions from '../actions/feedAction';
+import Errors from '../components/Errors';
 
 function Login({ history, location }) {
   console.log('Login() : location : ', location);
@@ -38,8 +39,8 @@ function Login({ history, location }) {
     const body = {
       user: {
         email: email.current.value,
-        password: pass.current.value
-      }
+        password: pass.current.value,
+      },
     };
 
     axios
@@ -47,12 +48,6 @@ function Login({ history, location }) {
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   };
-
-  const errMsg = [];
-  if (error) {
-    console.log('>>> : ', error);
-    Object.keys(error).forEach((key) => error[key].forEach((msg) => errMsg.push(key + ': ' + msg)));
-  }
 
   return (
     <div>
@@ -65,7 +60,7 @@ function Login({ history, location }) {
                 <NavLink to='/register'>Need an account?</NavLink>
               </p>
 
-              <ul className='error-messages'>{error ? errMsg.map((msg) => <li key={msg}>{msg}</li>) : ''}</ul>
+              <Errors errors={error} />
 
               <form onSubmit={login}>
                 <fieldset className='form-group'>

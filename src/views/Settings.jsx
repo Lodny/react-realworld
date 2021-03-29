@@ -2,12 +2,14 @@ import * as React from 'react';
 import { FeedContext } from '../store/feedStore';
 import * as actions from '../actions/feedAction';
 import axios from 'axios';
+import Errors from '../components/Errors';
 
 const Settings = ({ history }) => {
   const { store, dispatch } = React.useContext(FeedContext);
   // console.log('Settings() : store.user : ', store.user);
 
   const [user, setUser] = React.useState(Object.assign({}, store.user));
+  const [error, setError] = React.useState(null);
 
   const handleInput = (input) => (e) => {
     // console.log('Settings() : handleInput() : ', input, e.target.value);
@@ -19,8 +21,6 @@ const Settings = ({ history }) => {
 
     const processSuccess = (data) => {
       console.log('Settings() : update() : processSuccess() : ', data);
-      // dispatch({ type: actions.SET_ARTICLES, payload: data });
-      // dispatch({ type: actions.SETTINGS, payload: user})
       dispatch({ type: actions.LOGIN, payload: data.user });
       history.push(`/@${data.user.username}`);
     };
@@ -28,7 +28,8 @@ const Settings = ({ history }) => {
     const processError = (err) => {
       console.log('Settings() : update() : processError() : ', err);
       if (err?.status) {
-        console.log('status', err.status, err.data);
+        console.log('status', err.status, err.data.errors);
+        setError(err.data.errors);
       }
     };
 
@@ -48,8 +49,8 @@ const Settings = ({ history }) => {
         // bio: bio.current.value,
         // email: email.current.value,
         // password: password.current.value,
-        ...user
-      }
+        ...user,
+      },
     };
     axios
       .put(url, body, store.tokenHeader(store.user))
@@ -69,6 +70,8 @@ const Settings = ({ history }) => {
         <div className='row'>
           <div className='col-md-6 offset-md-3 col-xs-12'>
             <h1 className='text-xs-center'>Your Settings</h1>
+
+            <Errors errors={error} />
 
             <form>
               <fieldset>

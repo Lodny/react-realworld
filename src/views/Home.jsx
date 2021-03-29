@@ -6,6 +6,7 @@ import axios from 'axios';
 import ArticlePreview from '../components/ArticlePreview';
 import Tags from '../components/Tags';
 import Pagination from '../components/Pagination';
+import { NavLink } from 'react-router-dom';
 
 function Home({ history }) {
   const { store, dispatch } = useContext(FeedContext);
@@ -30,16 +31,18 @@ function Home({ history }) {
     };
 
     const processError = (err) => {
-      console.log('Profile() : useEffect() : processError() : ', err);
+      console.log('Home() : useEffect() : processError() : ', err);
       if (err?.status) {
         console.log('status', err.status, err.data);
+        return history.push('/');
       }
     };
 
-    // url = `https://conduit.productionready.io/api/articles?limit=10&offset=${store.currPage * 10}${
+    // your feed url   : `https://conduit.productionready.io/api/articles/feed?limit=10&offset=${store.currPage * 10}`
+    // global feed url : `https://conduit.productionready.io/api/articles?limit=10&offset=${store.currPage * 10}
     const url =
       store.selected === 0
-        ? `https://conduit.productionready.io/api/articles/feed?limit=10&offset=${store.currPage * 10}`
+        ? `${store.serverBase()}/api/articles/feed?limit=10&offset=${store.currPage * 10}`
         : `${store.serverBase()}/api/articles?limit=10&offset=${store.currPage * 10}${
             store.tag ? '&tag=' + store.tag : ''
           }`;
@@ -73,7 +76,7 @@ function Home({ history }) {
                       <li className='nav-item'>
                         <a
                           href='/'
-                          className={'nav-link ' + (store.selected === 0 ? 'disabled active' : '')}
+                          className={`nav-link ${store.selected === 0 ? 'disabled active' : ''}`}
                           onClick={(e) => {
                             e.preventDefault();
                             if (store.selected === 0) return;
@@ -81,6 +84,7 @@ function Home({ history }) {
                           }}
                         >
                           Your Feed
+                          {/* Feed Articles created by followed users, */}
                         </a>
                       </li>
                     </>
@@ -90,7 +94,7 @@ function Home({ history }) {
                   <li className='nav-item'>
                     <a
                       href='/'
-                      className={'nav-link ' + (store.selected === 1 ? 'disabled active' : '')}
+                      className={`nav-link ${store.selected === 1 ? 'disabled active' : ''}`}
                       onClick={(e) => {
                         e.preventDefault();
                         if (store.selected === 1) return;

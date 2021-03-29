@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { FeedContext } from '../store/feedStore';
 import * as actions from '../actions/feedAction';
+import Errors from '../components/Errors';
 
 function Register({ history }) {
   const username = React.useRef();
@@ -41,20 +42,14 @@ function Register({ history }) {
       user: {
         username: username.current.value,
         email: email.current.value,
-        password: pass.current.value
-      }
+        password: pass.current.value,
+      },
     };
     axios
       .post(url, body)
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   };
-
-  const errMsg = [];
-  if (error) {
-    console.log('>>> : ', error);
-    Object.keys(error).forEach((key) => error[key].forEach((msg) => errMsg.push(key + ': ' + msg)));
-  }
 
   return (
     <div>
@@ -67,11 +62,11 @@ function Register({ history }) {
                 <NavLink to='/login'>Have an account?</NavLink>
               </p>
 
-              <ul className='error-messages'>{error ? errMsg.map((msg) => <li key={msg}>{msg}</li>) : ''}</ul>
+              <Errors errors={error} />
 
               <form onSubmit={register}>
                 <fieldset className='form-group'>
-                  <input ref={username} className='form-control form-control-lg' type='text' placeholder='Your Name' />
+                  <input ref={username} className='form-control form-control-lg' type='text' placeholder='Username' />
                 </fieldset>
                 <fieldset className='form-group'>
                   <input ref={email} className='form-control form-control-lg' type='text' placeholder='Email' />

@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import ArticlePreview from '../components/ArticlePreview';
 import axios from 'axios';
 import { FeedContext } from '../store/feedStore';
+import { NavLink } from 'react-router-dom';
 
 const Profile = ({ match, history }) => {
   // console.log('Profile() : match : ', match);
@@ -108,18 +109,28 @@ const Profile = ({ match, history }) => {
             <div className='col-xs-12 col-md-10 offset-md-1'>
               <img src={profile.image} className='user-img' alt={profile.bio} />
               <h4>{profile.username}</h4>
-              <p>
-                {/* Cofounder @GoThinkster, lived in Aol's HQ for a few months, kinda looks like Peeta from the Hunger Games */}
-                {profile.bio}
-              </p>
-              <button
-                className={'btn btn-sm action-btn ' + (profile.following ? 'btn-secondary' : 'btn-outline-secondary')}
-                onClick={handleFollow}
-              >
-                <i className='ion-plus-round'>
-                  {' ' + (profile.following ? 'Unf' : 'F') + 'ollow ' + profile.username}
-                </i>
-              </button>
+              <p>{profile.bio}</p>
+
+              {store.user && store.user.username === profile.username ? (
+                <NavLink
+                  ui-sref='app.settings'
+                  class='btn btn-sm btn-outline-secondary action-btn'
+                  ng-show='$ctrl.isUser'
+                  // href='#/settings'
+                  to='/settings'
+                >
+                  <i className='ion-gear-a'></i> Edit Profile Settings
+                </NavLink>
+              ) : (
+                <button
+                  className={'btn btn-sm action-btn ' + (profile.following ? 'btn-secondary' : 'btn-outline-secondary')}
+                  onClick={handleFollow}
+                >
+                  <i className='ion-plus-round'>
+                    {' ' + (profile.following ? 'Unf' : 'F') + 'ollow ' + profile.username}
+                  </i>
+                </button>
+              )}
             </div>
           </div>
         </div>

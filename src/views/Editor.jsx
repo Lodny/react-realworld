@@ -1,12 +1,14 @@
 import * as React from 'react';
 import axios from 'axios';
 import { FeedContext } from '../store/feedStore';
+import Errors from '../components/Errors';
 
 const Editor = ({ match, history }) => {
   const { store } = React.useContext(FeedContext);
-  const [article, setArticle] = React.useState({ tagList: [] }); //Object.assign({}, store.user));
+  const [article, setArticle] = React.useState({ title: '', description: '', body: '', tagList: [] });
+  const [error, setError] = React.useState(null);
   // const { title, description, body, tag, tagList } = article;
-  const title = React.useRef();
+  // const title = React.useRef();
 
   React.useEffect(() => {
     console.log('Editor() : useEffect() : match.params : ', match.params);
@@ -31,8 +33,8 @@ const Editor = ({ match, history }) => {
         .catch((err) => processError(err?.response || err?.request || err.message));
     }
 
-    title.current.focus();
-    title.current.select();
+    // title.current.focus();
+    // title.current.select();
   }, []);
 
   const handleInput = (input) => (e) => {
@@ -88,7 +90,8 @@ const Editor = ({ match, history }) => {
     const processError = (err) => {
       console.log('Editor() : addArticle() : processError() : ', err);
       if (err?.status) {
-        console.log('status', err.status, err.data);
+        console.log('status', err.status, err.data.errors);
+        setError(err.data.errors);
       }
     };
 
@@ -96,8 +99,8 @@ const Editor = ({ match, history }) => {
     console.log('Editor() : addArticle() : url : ', url);
     const body = {
       article: {
-        ...article
-      }
+        ...article,
+      },
     };
 
     if (match?.params.slug) {
@@ -118,6 +121,7 @@ const Editor = ({ match, history }) => {
       <div className='container page'>
         <div className='row'>
           <div className='col-md-10 offset-md-1 col-xs-12'>
+            <Errors errors={error} />
             <form>
               <fieldset>
                 <fieldset className='form-group'>
@@ -125,7 +129,7 @@ const Editor = ({ match, history }) => {
                     type='text'
                     className='form-control form-control-lg'
                     placeholder='Article Title'
-                    ref={title}
+                    // ref={title}
                     value={article.title}
                     onChange={handleInput('title')}
                   />
