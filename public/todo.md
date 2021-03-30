@@ -6,13 +6,23 @@
 
 ## Article
 
-- Delete Article
-- Post Comment
-- Delete Comment
+## Feed
 
 ## User
 
+- get user ?
+
 ## Comment
 
-- All
--
+## Tag
+
+- max 10? 20?
+
+## Bug
+
+- change password ???
+
+##
+
+- using form
+  - onSubmit or button type='button'

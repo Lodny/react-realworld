@@ -6,19 +6,18 @@ import axios from 'axios';
 import ArticlePreview from '../components/ArticlePreview';
 import Tags from '../components/Tags';
 import Pagination from '../components/Pagination';
-import { NavLink } from 'react-router-dom';
 
 function Home({ history }) {
   const { store, dispatch } = useContext(FeedContext);
 
   useEffect(() => {
     dispatch({ type: actions.SET_HISTORY, payload: history });
-    // if (store?.isLogin) dispatch({ type: actions.CHANGE_ARTICLES, payload: 0 });
+    // if (store.user) dispatch({ type: actions.CHANGE_ARTICLES, payload: 0 });
     console.log('Home() : useEffect() : init');
 
     return () => {
       console.log('Home() : useEffect() : delete articles and tag');
-      dispatch({ type: actions.REMOVE_ARTICLES, payload: store.isLogin ? 0 : 1 });
+      dispatch({ type: actions.REMOVE_ARTICLES, payload: store.user ? 0 : 1 });
     };
   }, []);
 
@@ -59,19 +58,23 @@ function Home({ history }) {
   return (
     <div>
       <div className='home-page'>
-        <div className='banner'>
-          <div className='container'>
-            <h1 className='logo-font'>conduit</h1>
-            <p>A place to share your knowledge.</p>
+        {!store.user ? (
+          <div className='banner'>
+            <div className='container'>
+              <h1 className='logo-font'>conduit</h1>
+              <p>A place to share your knowledge.</p>
+            </div>
           </div>
-        </div>
+        ) : (
+          ''
+        )}
 
         <div className='container page'>
           <div className='row'>
             <div className='col-md-9'>
               <div className='feed-toggle'>
                 <ul className='nav nav-pills outline-active'>
-                  {store.isLogin ? (
+                  {store.user ? (
                     <>
                       <li className='nav-item'>
                         <a

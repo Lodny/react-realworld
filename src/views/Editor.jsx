@@ -84,7 +84,7 @@ const Editor = ({ match, history }) => {
 
     const processSuccess = (data) => {
       console.log('Editor() : addArticle() : processSuccess() : ', data);
-      history.push(`/article/${data.article.slug}`);
+      return history.push(`/article/${data.article.slug}`);
     };
 
     const processError = (err) => {

@@ -13,19 +13,19 @@ const getTokenHeader = (user) => {
     headers: {
       'content-type': 'application/json;charset=UTF-8',
       'Access-Control-Allow-Headers': 'authorization',
-      authorization: `Token ${user?.token}`
-    }
+      authorization: `Token ${user?.token}`,
+    },
   };
 };
 
 const initial = {
-  isLogin: false,
+  user: null,
   history: null,
   selected: 1,
   tag: null,
   currPage: 0,
   serverBase: getServerBase,
-  tokenHeader: getTokenHeader
+  tokenHeader: getTokenHeader,
 };
 
 const FeedStore = (props) => {
@@ -33,7 +33,7 @@ const FeedStore = (props) => {
 
   return <FeedContext.Provider value={{ store, dispatch }}>{props.children}</FeedContext.Provider>;
 
-  // const [user, userDispatch] = useReducer(userReducer, { isLogin: false, history: null });
+  // const [user, userDispatch] = useReducer(userReducer, { user: null, history: null });
   // const [feed, feedDispatch] = useReducer(feedReducer, { selected: 1, tag: null, currPage: 0 });
 
   // useEffect(() => {

@@ -1,18 +1,17 @@
 import * as React from 'react';
 import { FeedContext } from '../store/feedStore';
 import axios from 'axios';
-import * as actions from '../actions/feedAction.js';
 import { NavLink } from 'react-router-dom';
 
 // const ArticlePreview = ({ match, article }) => {
 const ArticlePreview = (props) => {
   console.log('ArticlePreview() : props : ', props.article);
-  const { store, dispatch } = React.useContext(FeedContext);
+  const { store } = React.useContext(FeedContext);
   const [article, setArticle] = React.useState(props.article);
 
   const handleFavorite = () => {
-    console.log('ArticlePreview() : handleFavorite() : store : ', store.isLogin);
-    if (!store.isLogin) return store.history?.push('/register');
+    // console.log('ArticlePreview() : handleFavorite() : store.user : ', store.user);
+    if (!store.user) return store.history?.push('/register');
 
     console.log('add favorite...');
 

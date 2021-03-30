@@ -22,7 +22,7 @@ function Login({ history, location }) {
     const processSuccess = (data) => {
       console.log('Login() : login() : processSuccess() : ', data);
       dispatch({ type: actions.LOGIN, payload: data.user });
-      history.push('/');
+      return history.push('/');
     };
 
     const processError = (err) => {

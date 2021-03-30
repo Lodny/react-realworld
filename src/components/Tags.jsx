@@ -4,13 +4,13 @@ import * as actions from '../actions/feedAction';
 import axios from 'axios';
 
 const Tags = () => {
-  const { dispatch } = useContext(FeedContext);
+  const { store, dispatch } = useContext(FeedContext);
   const [tags, setTags] = useState([]);
 
   const selectTag = (tag, e) => {
     e.preventDefault();
-    console.log('Tags() : selectTag() : ', tag);
-    dispatch({ type: actions.SET_ARTICLES_TAG, payload: tag });
+    console.log('Tags() : selectTag() store.tag : ', store.tag, ' select tag : ', tag);
+    if (store.tag !== tag) dispatch({ type: actions.SET_ARTICLES_TAG, payload: tag });
   };
 
   useEffect(() => {
@@ -23,12 +23,14 @@ const Tags = () => {
       console.log('Tags() : useEffect() : processError() : ', err);
       if (err?.status) {
         console.log('status', err.status, err.data);
+        // setTags([]);
       }
     };
 
     console.log('Tags() : useEffect() : tags : ', tags);
     axios
-      .get('https://conduit.productionready.io/api/tags')
+      // .get('https://conduit.productionready.io/api/tags')
+      .get(`${store.serverBase()}/api/tags`)
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   }, []);

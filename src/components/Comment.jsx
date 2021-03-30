@@ -12,7 +12,7 @@ const Comment = ({ slug }) => {
   const [refresh, setRefresh] = React.useState(false);
 
   const addComment = () => {
-    console.log('Comment() : addComment() : store : ', store.isLogin);
+    console.log('Comment() : addComment() : store.user : ', store.user);
     setInput('');
 
     const processSuccess = (data) => {
@@ -31,8 +31,8 @@ const Comment = ({ slug }) => {
     console.log('Comment() : addComment() : url : ', url);
     const body = {
       comment: {
-        body: input
-      }
+        body: input,
+      },
     };
     axios
       .post(url, body, store.tokenHeader(store.user))
@@ -90,7 +90,7 @@ const Comment = ({ slug }) => {
 
   return (
     <>
-      {store.isLogin ? (
+      {store.user ? (
         <form className='card comment-form'>
           <div className='card-block'>
             <textarea
@@ -105,7 +105,7 @@ const Comment = ({ slug }) => {
           </div>
           <div className='card-footer'>
             <img src={store.user.image} className='comment-author-img' alt={store.user.username} />
-            <button className='btn btn-sm btn-primary' onClick={addComment}>
+            <button className='btn btn-sm btn-primary' type='button' onClick={addComment}>
               Post Comment
             </button>
           </div>

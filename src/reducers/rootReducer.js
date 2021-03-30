@@ -30,19 +30,19 @@ export const rootReducer = (store, { type, payload }) => {
             return {
               ...article,
               favorited: payload.favorited,
-              favoritesCount: payload.favoritesCount
+              favoritesCount: payload.favoritesCount,
             };
           }
           return article;
-        })
+        }),
       };
 
     // user
     case actions.LOGIN:
-      return { ...store, isLogin: true, selected: 0, user: payload };
+      return { ...store, selected: 0, user: payload };
 
     case actions.LOGOUT:
-      return { ...store, isLogin: false, selected: 1, user: null };
+      return { ...store, selected: 1, user: null };
 
     case actions.SET_HISTORY:
       return { ...store, history: payload };

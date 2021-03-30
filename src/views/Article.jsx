@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 
 const Article = ({ match, history }) => {
   // console.log(match, history);
-  const { store, dispatch } = useContext(FeedContext);
+  const { store } = useContext(FeedContext);
   const [article, setArticle] = useState(null);
 
   const deleteArticle = () => {
@@ -25,8 +25,8 @@ const Article = ({ match, history }) => {
 
   // ===============================================================================
   const handleFollow = () => {
-    console.log('Article() : handleFollow() : store : ', store.isLogin);
-    if (!store.isLogin) return store.history?.push('/register');
+    console.log('Article() : handleFollow() : store.user : ', store.user);
+    if (!store.user) return store.history?.push('/register');
 
     const processSuccess = (data) => {
       console.log('Article() : handleFollow() : processSuccess() : ', data.profile);
@@ -50,8 +50,8 @@ const Article = ({ match, history }) => {
 
   // ===============================================================================
   const handleFavorite = () => {
-    console.log('Article() : handleFavorite() : store : ', store.isLogin);
-    if (!store.isLogin) return store.history?.push('/register');
+    console.log('Article() : handleFavorite() : store.user : ', store.user);
+    if (!store.user) return store.history?.push('/register');
 
     const processSuccess = (data) => {
       console.log('Article() : handleFavorite() : processSuccess() : ', data.article);
@@ -208,7 +208,7 @@ const Article = ({ match, history }) => {
         </div>
         <div className='row'>
           <div className='col-xs-12 col-md-8 offset-md-2'>
-            {!store.isLogin ? (
+            {!store.user ? (
               <p>
                 <NavLink to='/login'>Sign in</NavLink> or <NavLink to='/register'>Sign up</NavLink> to add comments on
                 this article.

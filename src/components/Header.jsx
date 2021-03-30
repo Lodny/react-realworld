@@ -20,7 +20,7 @@ const Header = () => {
               </NavLink>
             </li>
 
-            {store.isLogin ? (
+            {store.user ? (
               <>
                 <li className='nav-item'>
                   <NavLink to='/editor' className='nav-link'>
@@ -39,10 +39,6 @@ const Header = () => {
                 </li>
               </>
             ) : (
-              ''
-            )}
-
-            {!store.isLogin ? (
               <>
                 <li className='nav-item'>
                   <NavLink to='/login' className='nav-link'>
@@ -55,8 +51,6 @@ const Header = () => {
                   </NavLink>
                 </li>
               </>
-            ) : (
-              ''
             )}
           </ul>
         </div>

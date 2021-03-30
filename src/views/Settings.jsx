@@ -16,44 +16,32 @@ const Settings = ({ history }) => {
     setUser(Object.assign({}, user, { [input]: e.target.value }));
   };
 
-  const update = () => {
-    console.log('Settings() : update() : ');
+  const updateSettings = () => {
+    // e.preventDefault();
+
+    // console.log('Settings() : updateSettings() : <><><>');
 
     const processSuccess = (data) => {
-      console.log('Settings() : update() : processSuccess() : ', data);
+      console.log('Settings() : updateSettings() : processSuccess() : ', data);
       dispatch({ type: actions.LOGIN, payload: data.user });
-      history.push(`/@${data.user.username}`);
+      return history.push(`/@${data.user.username}`);
     };
 
     const processError = (err) => {
-      console.log('Settings() : update() : processError() : ', err);
+      console.log('Settings() : updateSettings() : processError() : ', err);
       if (err?.status) {
         console.log('status', err.status, err.data.errors);
         setError(err.data.errors);
       }
     };
 
-    const url = `${store.serverBase()}/api/user`;
-    console.log('Settings() : update() : url : ', url);
-    // const option = {
-    //   headers: {
-    //     'content-type': 'application/json;charset=UTF-8',
-    //     'Access-Control-Allow-Headers': 'authorization',
-    //     authorization: `Token ${store.user.token}`,
-    //   },
-    // };
     const body = {
       user: {
-        // image: image.current.value,
-        // username: username.current.value,
-        // bio: bio.current.value,
-        // email: email.current.value,
-        // password: password.current.value,
         ...user,
       },
     };
     axios
-      .put(url, body, store.tokenHeader(store.user))
+      .put(`${store.serverBase()}/api/user`, body, store.tokenHeader(store.user))
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   };
@@ -61,7 +49,7 @@ const Settings = ({ history }) => {
   const logout = () => {
     console.log('Settings() : logout()');
     dispatch({ type: actions.LOGOUT, payload: null });
-    history.push('/');
+    return history.push('/');
   };
 
   return (
@@ -119,7 +107,7 @@ const Settings = ({ history }) => {
                     onChange={handleInput('password')}
                   />
                 </fieldset>
-                <button className='btn btn-lg btn-primary pull-xs-right' onClick={update}>
+                <button className='btn btn-lg btn-primary pull-xs-right' type='button' onClick={updateSettings}>
                   Update Settings
                 </button>
               </fieldset>

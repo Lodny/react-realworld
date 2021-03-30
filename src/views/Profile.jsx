@@ -24,8 +24,8 @@ const Profile = ({ match, history }) => {
   };
 
   const handleFollow = () => {
-    console.log('Profile() : handleFollow() : store : ', store.isLogin);
-    if (!store.isLogin) return store.history?.push('/register');
+    console.log('Profile() : handleFollow() : store.user : ', store.user);
+    if (!store.user) return store.history?.push('/register');
 
     const processSuccess = (data) => {
       console.log('Profile() : handleFollow() : processSuccess() : ', data.profile);
@@ -85,13 +85,14 @@ const Profile = ({ match, history }) => {
     };
 
     let url;
-    if (selected === 'my')
-      // url = `https://conduit.productionready.io/api/articles?author=${match.params.username}&limit=5&offset=0`;
-      url = `${store.serverBase()}/api/articles?author=${match.params.username}&limit=5&offset=0`;
-    else url = `https://conduit.productionready.io/api/articles?favorited=${match.params.username}&limit=5&offset=0`;
+    if (selected === 'my') url = `${store.serverBase()}/api/articles?author=${match.params.username}&limit=5&offset=0`;
+    else url = `${store.serverBase()}/api/articles?favorited=${match.params.username}&limit=5&offset=0`; //
+    // url = `https://conduit.productionready.io/api/articles?author=${match.params.username}&limit=5&offset=0`;
+    // url = `https://conduit.productionready.io/api/articles?favorited=${match.params.username}&limit=5&offset=0`;
+    // -> articles I favorited
 
     axios
-      .get(url)
+      .get(url, store.tokenHeader(store.user))
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   }, [selected]);
@@ -112,13 +113,7 @@ const Profile = ({ match, history }) => {
               <p>{profile.bio}</p>
 
               {store.user && store.user.username === profile.username ? (
-                <NavLink
-                  ui-sref='app.settings'
-                  class='btn btn-sm btn-outline-secondary action-btn'
-                  ng-show='$ctrl.isUser'
-                  // href='#/settings'
-                  to='/settings'
-                >
+                <NavLink to='/settings' className='btn btn-sm btn-outline-secondary action-btn'>
                   <i className='ion-gear-a'></i> Edit Profile Settings
                 </NavLink>
               ) : (
