@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 
 const Profile = ({ match, history }) => {
   // console.log('Profile() : match : ', match);
-  // console.log('Profile() : username : ', match.params.username);
+  console.log('Profile() : username : ', match.params.username);
 
   const { store } = useContext(FeedContext);
 
@@ -69,7 +69,7 @@ const Profile = ({ match, history }) => {
       .get(url, store.tokenHeader(store.user))
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
-  }, []);
+  }, [match.params.username]);
 
   useEffect(() => {
     const processSuccess = (data) => {
@@ -161,7 +161,7 @@ const Profile = ({ match, history }) => {
               articles.length ? (
                 <>
                   {articles.map((article) => (
-                    <ArticlePreview article={article} key={article.createdAt} />
+                    <ArticlePreview article={article} key={article.id} />
                   ))}
                 </>
               ) : (

@@ -7,8 +7,7 @@ const Editor = ({ match, history }) => {
   const { store } = React.useContext(FeedContext);
   const [article, setArticle] = React.useState({ title: '', description: '', body: '', tagList: [] });
   const [error, setError] = React.useState(null);
-  // const { title, description, body, tag, tagList } = article;
-  // const title = React.useRef();
+  const [tag, setTag] = React.useState();
 
   React.useEffect(() => {
     console.log('Editor() : useEffect() : match.params : ', match.params);
@@ -38,8 +37,8 @@ const Editor = ({ match, history }) => {
   }, []);
 
   const handleInput = (input) => (e) => {
-    // console.log('Editor() : handleInput() : ', input, e.target.value);
-    setArticle(Object.assign({}, article, { [input]: e.target.value }));
+    if (input === 'tag') setTag(e.target.value);
+    else setArticle(Object.assign({}, article, { [input]: e.target.value }));
   };
 
   // const [title, setTitle] = React.useState();
@@ -68,9 +67,8 @@ const Editor = ({ match, history }) => {
   const handleKeyUp = (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
-      setArticle(Object.assign({}, article, { tagList: [...article.tagList, e.target.value], tag: '' }));
-      // setTag('');
-      // setTagList([...tagList, e.target.value]);
+      setArticle(Object.assign({}, article, { tagList: [...article.tagList, e.target.value] }));
+      setTag('');
     }
   };
 
@@ -97,6 +95,8 @@ const Editor = ({ match, history }) => {
 
     const url = `${store.serverBase()}/api/articles`;
     console.log('Editor() : addArticle() : url : ', url);
+
+    // delete article.tag;
     const body = {
       article: {
         ...article,
@@ -157,7 +157,7 @@ const Editor = ({ match, history }) => {
                     type='text'
                     className='form-control'
                     placeholder='Enter tags'
-                    value={article.tag}
+                    value={tag}
                     onChange={handleInput('tag')}
                     onKeyUp={handleKeyUp}
                   />

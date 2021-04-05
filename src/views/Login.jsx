@@ -44,7 +44,7 @@ function Login({ history, location }) {
     };
 
     axios
-      .post(url, body, store.tokenHeader(store.user))
+      .post(url, body) //, store.tokenHeader(store.user))
       .then((res) => processSuccess(res.data))
       .catch((err) => processError(err?.response || err?.request || err.message));
   };

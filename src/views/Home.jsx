@@ -124,7 +124,7 @@ function Home({ history }) {
                 articles.length ? (
                   <>
                     {articles?.map((article) => (
-                      <ArticlePreview article={article} key={article.createdAt} />
+                      <ArticlePreview article={article} key={article.id} />
                     ))}
                     <Pagination />
                   </>

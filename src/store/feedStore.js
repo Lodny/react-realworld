@@ -4,18 +4,25 @@ import { rootReducer } from '../reducers/rootReducer';
 export const FeedContext = React.createContext();
 
 const getServerBase = () => {
-  // return 'http://localhost:8080'; // Spring + MongoDB
-  return 'http://localhost:5000'; // NodeJS + Express + MongoDB
+  return 'http://localhost:8080'; // Spring + MongoDB
+  // return 'http://localhost:5000'; // NodeJS + Express + MongoDB
 };
 
 const getTokenHeader = (user) => {
-  return {
-    headers: {
-      'content-type': 'application/json;charset=UTF-8',
-      'Access-Control-Allow-Headers': 'authorization',
-      authorization: `Token ${user?.token}`,
-    },
-  };
+  if (user)
+    return {
+      headers: {
+        'content-type': 'application/json;charset=UTF-8',
+        'Access-Control-Allow-Headers': 'authorization',
+        Authorization: `Token ${user?.token}`,
+      },
+    };
+  else
+    return {
+      headers: {
+        'content-type': 'application/json;charset=UTF-8',
+      },
+    };
 };
 
 const initial = {

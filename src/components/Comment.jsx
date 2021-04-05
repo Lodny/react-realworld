@@ -117,7 +117,7 @@ const Comment = ({ slug }) => {
       {comments.length
         ? comments.map((comment) => {
             return (
-              <div className='card' key={comment._id}>
+              <div className='card' key={comment.id}>
                 <div className='card-block'>
                   <p className='card-text'>{comment.body}</p>
                 </div>
