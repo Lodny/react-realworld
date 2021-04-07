@@ -28,7 +28,7 @@ function App() {
             <Route exact path='/editor/:slug' component={Editor} />
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
-            <Route path='/@:username' component={Profile} />
+            <Route exact path='/@:username' component={Profile} />
             <Route path='/article/:slug' component={Article} />
             {/* <Route path='/@:username/:favorites' component={Profile} /> */}
           </Switch>

@@ -4,15 +4,17 @@ import axios from 'axios';
 import { FeedContext } from '../store/feedStore';
 import { NavLink } from 'react-router-dom';
 
-const Profile = ({ match, history }) => {
+const Profile = ({ match }) => {
   // console.log('Profile() : match : ', match);
-  console.log('Profile() : username : ', match.params.username);
 
   const { store } = useContext(FeedContext);
 
   const [profile, setProfile] = useState(null);
   const [articles, setArticles] = useState(null);
   const [selected, setSelected] = useState('my');
+
+  console.log('Profile() : match.params.username : ', match.params.username);
+  console.log('Profile() : profile.username : ', profile?.username);
 
   const changeArticles = (select, e) => {
     e.preventDefault();
@@ -54,6 +56,7 @@ const Profile = ({ match, history }) => {
     const processSuccess = (data) => {
       console.log('Profile() : useEffect() : processSuccess() : ', data.profile);
       setProfile(data.profile);
+      setSelected('my');
     };
 
     const processError = (err) => {

@@ -5,7 +5,8 @@ import { NavLink } from 'react-router-dom';
 
 // const ArticlePreview = ({ match, article }) => {
 const ArticlePreview = (props) => {
-  console.log('ArticlePreview() : props : ', props.article);
+  console.log('ArticlePreview() : props : ', props);
+
   const { store } = React.useContext(FeedContext);
   const [article, setArticle] = React.useState(props.article);
 
